@@ -47,7 +47,7 @@ export default function App() {
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+          <Route path="/" element={<Home />} />
           <Route path="/loan-plans" element={<PublicLayout><LoanPlans /></PublicLayout>} />
 
           {/* Guest only */}
