@@ -33,7 +33,7 @@ export default function StaffDashboard() {
       {/* Page header */}
       <div className="mb-5">
         <h1 className="text-2xl font-extrabold text-slate-800">
-          হাই {user?.name}, এটি আপনার স্টাফ প্যানেল!
+          হাই {user?.name || 'Tushar'}, এটি আপনার স্টাফ প্যানেল!
         </h1>
         <p className="text-slate-500 text-sm mt-0.5">{getBnDate()}</p>
       </div>
