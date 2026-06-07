@@ -8,11 +8,11 @@ import {
 } from 'react-icons/fa'
 
 const navItems = [
-  { path: '/staff', icon: <FaTachometerAlt />, label: 'ড্যাশবোর্ড' },
-  { path: '/staff/verify', icon: <FaUserCheck />, label: 'গ্রাহক নিরীক্ষা' },
-  { path: '/staff/password', icon: <FaKey />, label: 'পাসওয়ার্ড পরিবর্তন' },
-  { path: '/staff/customers', icon: <FaUsers />, label: 'সব গ্রাহক' },
-  { path: '/staff/notes', icon: <FaFileAlt />, label: 'নথি তৈরি' },
+  { path: '/staff',           icon: <FaTachometerAlt size={13} />, label: 'ড্যাশবোর্ড' },
+  { path: '/staff/verify',    icon: <FaUserCheck size={13} />,     label: 'গ্রাহক নিরীক্ষা' },
+  { path: '/staff/password',  icon: <FaKey size={13} />,           label: 'পাসওয়ার্ড পরিবর্তন' },
+  { path: '/staff/customers', icon: <FaUsers size={13} />,         label: 'সব গ্রাহক' },
+  { path: '/staff/notes',     icon: <FaFileAlt size={13} />,       label: 'নথি তৈরি' },
 ]
 
 export default function StaffLayout() {
@@ -28,25 +28,28 @@ export default function StaffLayout() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
-
+    <div
+      className="flex h-screen overflow-hidden"
+      style={{ backgroundColor: '#0f172a', fontFamily: "'Hind Siliguri', sans-serif" }}
+    >
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-44 bg-slate-800 text-white flex flex-col
+        fixed inset-y-0 left-0 z-50 w-44 flex flex-col
         transform transition-transform duration-200
         ${open ? 'translate-x-0' : '-translate-x-full'}
         lg:relative lg:translate-x-0
-      `}>
+      `} style={{ backgroundColor: '#0f172a' }}>
+
         {/* Brand */}
-        <div className="px-4 py-4 border-b border-slate-700">
-          <div className="text-blue-400 font-extrabold text-base">Staff Panel</div>
+        <div className="px-4 py-4">
+          <div className="text-blue-400 font-extrabold text-base tracking-wide">Staff Panel</div>
         </div>
 
         {/* Menu label */}
-        <div className="px-4 pt-4 pb-1 text-xs text-slate-400">মেনু</div>
+        <div className="px-4 pb-1 text-xs text-slate-500 uppercase tracking-widest">মেনু</div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto px-2 pt-1">
           {navItems.map(item => {
             const active = location.pathname === item.path
             return (
@@ -54,13 +57,13 @@ export default function StaffLayout() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition ${
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm mb-0.5 transition ${
                   active
-                    ? 'bg-blue-600 text-white font-semibold rounded-md mx-2 my-0.5'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-700 rounded-md mx-2 my-0.5'
+                    ? 'bg-blue-600 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
-                <span className="text-xs">{item.icon}</span>
+                {item.icon}
                 {item.label}
               </Link>
             )
@@ -68,27 +71,29 @@ export default function StaffLayout() {
         </nav>
 
         {/* Logout */}
-        <div className="px-4 py-4 border-t border-slate-700">
+        <div className="px-4 py-4">
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition"
           >
-            <FaSignOutAlt /> লগআউট
+            <FaSignOutAlt size={12} /> লগআউট
           </button>
         </div>
       </aside>
 
       {open && (
-        <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setOpen(false)} />
+        <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setOpen(false)} />
       )}
 
-      {/* Main */}
+      {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b border-slate-200 px-5 py-3 flex items-center gap-3 lg:hidden">
-          <button onClick={() => setOpen(true)} className="text-slate-600"><FaBars size={20} /></button>
-          <span className="text-blue-600 font-bold text-sm">Staff Panel</span>
+        {/* Mobile topbar */}
+        <header className="lg:hidden flex items-center gap-3 px-4 py-3" style={{ backgroundColor: '#0f172a' }}>
+          <button onClick={() => setOpen(true)} className="text-slate-400"><FaBars size={20} /></button>
+          <span className="text-blue-400 font-bold text-sm">Staff Panel</span>
         </header>
-        <main className="flex-1 overflow-y-auto bg-gray-100 p-5">
+
+        <main className="flex-1 overflow-y-auto p-5" style={{ backgroundColor: '#0f172a' }}>
           <Outlet />
         </main>
       </div>
