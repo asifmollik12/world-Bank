@@ -103,9 +103,9 @@ export default function StaffLayout() {
             onMouseLeave={() => setLogoutHover(false)}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
             style={{
-              backgroundColor: logoutHover ? '#7f1d1d' : '#120707',
-              color: logoutHover ? '#fca5a5' : '#f87171',
-              border: `1px solid ${logoutHover ? '#dc2626' : '#450a0a'}`,
+              backgroundColor: logoutHover ? '#7f1d1d' : '#0f172a',
+              color: logoutHover ? '#fca5a5' : '#94a3b8',
+              border: `1px solid ${logoutHover ? '#dc2626' : '#1e293b'}`,
             }}
           >
             <FaSignOutAlt size={13} />
