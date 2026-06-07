@@ -8,6 +8,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import DashboardLayout from './layouts/DashboardLayout'
 import AdminLayout from './layouts/AdminLayout'
+import StaffLayout from './layouts/StaffLayout'
 
 // Public pages
 import Home from './pages/Home'
@@ -29,6 +30,9 @@ import AdminApplications from './pages/admin/AdminApplications'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminRepayments from './pages/admin/AdminRepayments'
 import AdminLoanPlans from './pages/admin/AdminLoanPlans'
+
+// Staff pages
+import StaffDashboard from './pages/staff/StaffDashboard'
 
 function PublicLayout({ children }) {
   return (
@@ -71,6 +75,11 @@ export default function App() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="repayments" element={<AdminRepayments />} />
             <Route path="loan-plans" element={<AdminLoanPlans />} />
+          </Route>
+
+          {/* Staff Panel */}
+          <Route path="/staff" element={<ProtectedRoute><StaffLayout /></ProtectedRoute>}>
+            <Route index element={<StaffDashboard />} />
           </Route>
 
           {/* 404 */}

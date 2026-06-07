@@ -1,0 +1,97 @@
+import { useState } from 'react'
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
+import {
+  FaTachometerAlt, FaUserCheck, FaKey, FaUsers,
+  FaFileAlt, FaBars, FaTimes, FaSignOutAlt
+} from 'react-icons/fa'
+
+const navItems = [
+  { path: '/staff', icon: <FaTachometerAlt />, label: 'ড্যাশবোর্ড' },
+  { path: '/staff/verify', icon: <FaUserCheck />, label: 'গ্রাহক নিরীক্ষা' },
+  { path: '/staff/password', icon: <FaKey />, label: 'পাসওয়ার্ড পরিবর্তন' },
+  { path: '/staff/customers', icon: <FaUsers />, label: 'সব গ্রাহক' },
+  { path: '/staff/notes', icon: <FaFileAlt />, label: 'নথি তৈরি' },
+]
+
+export default function StaffLayout() {
+  const { user, logout } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+
+  const handleLogout = async () => {
+    await logout()
+    toast.success('লগআউট হয়েছে')
+    navigate('/')
+  }
+
+  return (
+    <div className="flex h-screen overflow-hidden bg-gray-100" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-44 bg-slate-800 text-white flex flex-col
+        transform transition-transform duration-200
+        ${open ? 'translate-x-0' : '-translate-x-full'}
+        lg:relative lg:translate-x-0
+      `}>
+        {/* Brand */}
+        <div className="px-4 py-4 border-b border-slate-700">
+          <div className="text-blue-400 font-extrabold text-base">Staff Panel</div>
+        </div>
+
+        {/* Menu label */}
+        <div className="px-4 pt-4 pb-1 text-xs text-slate-400">মেনু</div>
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto">
+          {navItems.map(item => {
+            const active = location.pathname === item.path
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setOpen(false)}
+                className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition ${
+                  active
+                    ? 'bg-blue-600 text-white font-semibold rounded-md mx-2 my-0.5'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-700 rounded-md mx-2 my-0.5'
+                }`}
+              >
+                <span className="text-xs">{item.icon}</span>
+                {item.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Logout */}
+        <div className="px-4 py-4 border-t border-slate-700">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition"
+          >
+            <FaSignOutAlt /> লগআউট
+          </button>
+        </div>
+      </aside>
+
+      {open && (
+        <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setOpen(false)} />
+      )}
+
+      {/* Main */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="bg-white border-b border-slate-200 px-5 py-3 flex items-center gap-3 lg:hidden">
+          <button onClick={() => setOpen(true)} className="text-slate-600"><FaBars size={20} /></button>
+          <span className="text-blue-600 font-bold text-sm">Staff Panel</span>
+        </header>
+        <main className="flex-1 overflow-y-auto bg-gray-100 p-5">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  )
+}
