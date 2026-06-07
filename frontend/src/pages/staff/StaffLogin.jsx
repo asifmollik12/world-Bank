@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 // Staff list — username maps to phone field in DB, secret = password
 const staffMembers = [
@@ -16,6 +17,7 @@ export default function StaffLogin() {
   const [selectedStaff, setSelectedStaff] = useState('')
   const [form, setForm] = useState({ username: '', secret: '' })
   const [loading, setLoading] = useState(false)
+  const [showSecret, setShowSecret] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -89,14 +91,23 @@ export default function StaffLogin() {
           {/* Secret */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Secret</label>
-            <input
-              type="password"
-              placeholder="Secret"
-              value={form.secret}
-              onChange={e => setForm({ ...form, secret: e.target.value })}
-              className="w-full bg-slate-100 border-0 rounded-xl px-4 py-3 text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-400"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showSecret ? 'text' : 'password'}
+                placeholder="Secret"
+                value={form.secret}
+                onChange={e => setForm({ ...form, secret: e.target.value })}
+                className="w-full bg-slate-100 border-0 rounded-xl px-4 py-3 pr-11 text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-400"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowSecret(!showSecret)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showSecret ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
           </div>
 
           {/* LOGIN button */}
