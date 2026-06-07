@@ -36,6 +36,7 @@ import StaffDashboard from './pages/staff/StaffDashboard'
 import StaffLogin from './pages/staff/StaffLogin'
 import StaffVerify from './pages/staff/StaffVerify'
 import StaffPassword from './pages/staff/StaffPassword'
+import StaffCustomers from './pages/staff/StaffCustomers'
 
 function PublicLayout({ children }) {
   return (
@@ -86,6 +87,7 @@ export default function App() {
             <Route index element={<StaffDashboard />} />
             <Route path="verify" element={<StaffVerify />} />
             <Route path="password" element={<StaffPassword />} />
+            <Route path="customers" element={<StaffCustomers />} />
           </Route>
 
           {/* 404 */}
