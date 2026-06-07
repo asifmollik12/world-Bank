@@ -5,18 +5,22 @@ import toast from 'react-hot-toast'
 
 // Staff list — username maps to phone field in DB, secret = password
 const staffMembers = [
-  { label: 'Tushar', username: 'tusar', secret: 'tusarstaffpassword' },
+  { label: 'Tushar',  username: 'tusar', secret: 'tusarstaffpassword'  },
+  { label: 'Akash',   username: 'akash', secret: 'akashstaffpassword'  },
+  { label: 'Tamim',   username: 'tamim', secret: 'tamimstaffpassword'  },
 ]
 
 export default function StaffLogin() {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [selectedStaff, setSelectedStaff] = useState(staffMembers[0].label)
+  const [selectedStaff, setSelectedStaff] = useState('')
   const [form, setForm] = useState({ username: '', secret: '' })
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!selectedStaff) { toast.error('Please select a staff'); return }
 
     // Find staff by selected name
     const staff = staffMembers.find(s => s.label === selectedStaff)
@@ -53,12 +57,20 @@ export default function StaffLogin() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Staff — shown as plain display box matching screenshot */}
+          {/* Staff dropdown */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Staff</label>
-            <div className="w-full bg-slate-100 rounded-xl px-4 py-3 text-slate-700 text-sm font-medium">
-              {selectedStaff}
-            </div>
+            <select
+              value={selectedStaff}
+              onChange={e => setSelectedStaff(e.target.value)}
+              className="w-full bg-slate-100 border-0 rounded-xl px-4 py-3 text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">-- Select Staff --</option>
+              {staffMembers.map(s => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
           </div>
 
           {/* Username */}
