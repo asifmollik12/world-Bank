@@ -33,6 +33,7 @@ import AdminLoanPlans from './pages/admin/AdminLoanPlans'
 
 // Staff pages
 import StaffDashboard from './pages/staff/StaffDashboard'
+import StaffLogin from './pages/staff/StaffLogin'
 
 function PublicLayout({ children }) {
   return (
@@ -78,6 +79,7 @@ export default function App() {
           </Route>
 
           {/* Staff Panel */}
+          <Route path="/staff/login" element={<StaffLogin />} />
           <Route path="/staff" element={<ProtectedRoute><StaffLayout /></ProtectedRoute>}>
             <Route index element={<StaffDashboard />} />
           </Route>
