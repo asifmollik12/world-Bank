@@ -65,5 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users/{id}',         [UserController::class, 'show']);
         Route::patch('/users/{id}/status',[UserController::class, 'updateStatus']);
         Route::delete('/users/{id}',      [UserController::class, 'destroy']);
+        Route::post('/users/reset-password', [UserController::class, 'resetPassword']);
     });
 });

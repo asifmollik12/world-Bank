@@ -65,4 +65,20 @@ class UserController extends Controller
         User::findOrFail($id)->delete();
         return response()->json(['message' => 'User deleted']);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'phone'    => 'required|string',
+            'password' => 'required|min:6',
+        ]);
+
+        $user = User::where('phone', $request->phone)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->update(['password' => Hash::make($request->password)]);
+        return response()->json(['message' => 'Password reset successfully']);
+    }
 }
