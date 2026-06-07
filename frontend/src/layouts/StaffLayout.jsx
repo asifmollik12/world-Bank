@@ -46,26 +46,24 @@ export default function StaffLayout() {
       >
         {/* ── User Badge ── */}
         <div className="px-4 pt-5 pb-4" style={{ borderBottom: '1px solid #1e293b' }}>
-          {/* Avatar + name */}
-          <div className="flex items-center gap-3 mb-3">
+          {/* One line: avatar + name + Staff badge */}
+          <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}
             >
               {initials}
             </div>
-            <div className="overflow-hidden">
-              <div className="text-white font-bold text-sm truncate">{user?.name || 'Staff'}</div>
-              <div
-                className="text-xs font-semibold px-2 py-0.5 rounded-full w-fit mt-0.5"
-                style={{ backgroundColor: '#1e3a5f', color: '#60a5fa' }}
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-white font-bold text-sm truncate">{user?.name || 'Staff'}</span>
+              <span
+                className="text-xs font-bold px-2.5 py-0.5 rounded-full flex-shrink-0"
+                style={{ backgroundColor: '#1e3a5f', color: '#60a5fa', border: '1px solid #2563eb' }}
               >
                 Staff
-              </div>
+              </span>
             </div>
           </div>
-          {/* Panel label */}
-          <div className="text-blue-400 font-extrabold text-base tracking-wide">Staff Panel</div>
         </div>
 
         {/* ── Menu label ── */}
