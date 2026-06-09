@@ -121,7 +121,7 @@ export default function Register() {
   const labelStyle = { display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8, color: '#111', ...BN }
 
   return (
-    <div style={{ backgroundColor: '#f3f4f6', minHeight: '100vh', ...BN }}>
+    <div style={{ backgroundColor: '#e5e7eb', minHeight: '100vh', ...BN }}>
 
       {/* Blue header */}
       <div style={{ backgroundColor: '#1d3a8a', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -132,7 +132,7 @@ export default function Register() {
         <span style={{ color: '#fff', fontWeight: 700, fontSize: 17 }}>ব্যক্তিগত তথ্য</span>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ backgroundColor: '#fff', maxWidth: '100%', margin: '0 auto', padding: '28px 40px' }}>
+      <form onSubmit={handleSubmit} style={{ backgroundColor: '#fff', maxWidth: 960, margin: '24px auto', padding: '28px 40px', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
 
         {/* Page title */}
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
