@@ -53,7 +53,7 @@ export default function Overview() {
     .filter(l => l.status === 'disbursed')
     .reduce((s, l) => s + Number(l.amount), 0)
 
-  const hasProfile = user?.nid && user?.address
+  const hasProfile = user?.nid || user?.address || loans.length > 0
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'
@@ -112,8 +112,8 @@ export default function Overview() {
           </Link>
         </div>
 
-        {/* Profile completion prompt — shown if no NID/address */}
-        {!hasProfile && (
+        {/* No loans yet — show profile fill or apply prompt */}
+        {loans.length === 0 && (
           <div style={{
             backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
             textAlign: 'center', maxWidth: 380, margin: '0 auto',
@@ -148,7 +148,7 @@ export default function Overview() {
         )}
 
         {/* Pending review state — loan submitted, waiting */}
-        {hasProfile && loans.length > 0 && loans.every(l => ['pending','under_review'].includes(l.status)) && (
+        {loans.length > 0 && loans.every(l => ['pending','under_review'].includes(l.status)) && (
           <div style={{
             backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
             textAlign: 'center', maxWidth: 380, margin: '0 auto',
@@ -178,7 +178,7 @@ export default function Overview() {
         )}
 
         {/* Approved/Disbursed loans */}
-        {hasProfile && loans.some(l => ['approved','disbursed','completed'].includes(l.status)) && (
+        {loans.some(l => ['approved','disbursed','completed'].includes(l.status)) && (
           <div style={{ backgroundColor: '#fff', borderRadius: 12, padding: '20px', maxWidth: 380, margin: '0 auto', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontWeight: 700, color: '#1d3a8a', marginBottom: 12 }}>আমার ঋণ</div>
             {loans.slice(0, 3).map(loan => (
