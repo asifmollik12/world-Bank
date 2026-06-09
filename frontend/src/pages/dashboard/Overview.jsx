@@ -1,118 +1,180 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import api from '../../api/axios'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { FaFileAlt, FaCheckCircle, FaTimesCircle, FaClock, FaMoneyBillWave } from 'react-icons/fa'
+import api from '../../api/axios'
+import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaGlobe } from 'react-icons/fa'
 
-const statusColor = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  under_review: 'bg-blue-100 text-blue-700',
-  approved: 'bg-green-100 text-green-700',
-  rejected: 'bg-red-100 text-red-700',
-  disbursed: 'bg-purple-100 text-purple-700',
-  completed: 'bg-slate-100 text-slate-700',
+const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+
+function BottomNav({ active }) {
+  const items = [
+    { icon: <FaHome size={20} />, label: 'হোম',    path: '/dashboard' },
+    { icon: <FaLayerGroup size={20} />, label: 'ঋণ', path: '/dashboard/loans' },
+    { icon: <FaCreditCard size={20} />, label: 'কার্ড', path: '/dashboard/repayments' },
+    { icon: <FaHeadset size={20} />, label: 'সাহায়া', path: '/dashboard/notifications' },
+    { icon: <FaUser size={20} />, label: 'প্রোফাইল', path: '/dashboard/profile' },
+  ]
+  return (
+    <div style={{
+      position: 'fixed', bottom: 0, left: 0, right: 0,
+      backgroundColor: '#fff', borderTop: '1px solid #e5e7eb',
+      display: 'flex', justifyContent: 'space-around', alignItems: 'center',
+      padding: '10px 0 14px', zIndex: 50,
+      boxShadow: '0 -2px 10px rgba(0,0,0,0.08)',
+    }}>
+      {items.map(item => {
+        const isActive = active === item.path
+        return (
+          <Link key={item.path} to={item.path} style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+            color: isActive ? '#1d3a8a' : '#9ca3af',
+            textDecoration: 'none', fontSize: 10, fontWeight: isActive ? 700 : 400,
+            ...BN,
+          }}>
+            {item.icon}
+            <span>{item.label}</span>
+          </Link>
+        )
+      })}
+    </div>
+  )
 }
 
 export default function Overview() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [loans, setLoans] = useState([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.get('/loans').then(r => setLoans(r.data)).finally(() => setLoading(false))
+    api.get('/loans').then(r => setLoans(r.data)).catch(() => {})
   }, [])
 
-  const stats = [
-    { label: 'Total Applications', value: loans.length, icon: <FaFileAlt className="text-blue-500 text-2xl" />, bg: 'bg-blue-50' },
-    { label: 'Approved', value: loans.filter(l => ['approved', 'disbursed', 'completed'].includes(l.status)).length, icon: <FaCheckCircle className="text-green-500 text-2xl" />, bg: 'bg-green-50' },
-    { label: 'Pending', value: loans.filter(l => l.status === 'pending').length, icon: <FaClock className="text-yellow-500 text-2xl" />, bg: 'bg-yellow-50' },
-    { label: 'Rejected', value: loans.filter(l => l.status === 'rejected').length, icon: <FaTimesCircle className="text-red-500 text-2xl" />, bg: 'bg-red-50' },
-  ]
+  const totalBalance = loans
+    .filter(l => l.status === 'disbursed')
+    .reduce((s, l) => s + Number(l.amount), 0)
+
+  const hasProfile = user?.nid && user?.address
+
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-blue-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm">Welcome back, {user?.name}</p>
-      </div>
+    <div style={{ backgroundColor: '#f3f4f6', minHeight: '100vh', paddingBottom: 80, ...BN }}>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(s => (
-          <div key={s.label} className={`${s.bg} rounded-xl p-5 flex items-center gap-4 border border-slate-100`}>
-            {s.icon}
-            <div>
-              <div className="text-2xl font-bold text-slate-800">{s.value}</div>
-              <div className="text-xs text-slate-500">{s.label}</div>
-            </div>
+      {/* Top navbar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>World Bank</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <FaBell color="#fff" size={18} />
+          <div style={{
+            width: 36, height: 36, borderRadius: '50%', border: '2px dashed #93c5fd',
+            backgroundColor: '#1e40af', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontWeight: 800, fontSize: 15,
+          }}>
+            {user?.name?.charAt(0).toUpperCase()}
           </div>
-        ))}
-      </div>
-
-      {/* Quick actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <Link to="/dashboard/apply"
-          className="bg-gradient-to-r from-blue-700 to-blue-600 text-white rounded-xl p-6 flex items-center gap-4 hover:from-blue-800 transition">
-          <FaFileAlt className="text-3xl opacity-80" />
-          <div>
-            <div className="font-bold text-lg">Apply for Loan</div>
-            <div className="text-blue-200 text-sm">Quick & easy application</div>
-          </div>
-        </Link>
-        <Link to="/dashboard/repayments"
-          className="bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl p-6 flex items-center gap-4 hover:from-green-700 transition">
-          <FaMoneyBillWave className="text-3xl opacity-80" />
-          <div>
-            <div className="font-bold text-lg">Make Repayment</div>
-            <div className="text-green-100 text-sm">Pay your installment</div>
-          </div>
-        </Link>
-      </div>
-
-      {/* Recent loans */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100">
-        <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
-          <h2 className="font-semibold text-blue-900">Recent Applications</h2>
-          <Link to="/dashboard/loans" className="text-sm text-blue-600 hover:underline">View All</Link>
+          <span style={{ color: '#fff', fontSize: 13 }}>{user?.name?.split(' ')[0]}</span>
         </div>
-        {loading ? (
-          <div className="p-8 text-center text-slate-400">Loading...</div>
-        ) : loans.length === 0 ? (
-          <div className="p-8 text-center text-slate-400">
-            No loan applications yet.
-            <Link to="/dashboard/apply" className="text-blue-600 ml-1 hover:underline">Apply now</Link>
+      </div>
+
+      {/* Greeting banner */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '10px 20px 20px' }}>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>
+          {greeting}, {user?.name?.split(' ')[0]}!
+        </div>
+        <div style={{ color: '#93c5fd', fontSize: 13, marginTop: 2 }}>
+          বিশ্ব ব্যাংক ঋণে আপনাকে স্বাগতম!
+        </div>
+      </div>
+
+      <div style={{ padding: '0 16px', marginTop: -10 }}>
+
+        {/* Account balance card */}
+        <div style={{
+          backgroundColor: '#1d3a8a', borderRadius: 12, padding: '20px 24px',
+          marginBottom: 20, boxShadow: '0 4px 20px rgba(29,58,138,0.3)',
+          maxWidth: 380, margin: '0 auto 20px',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <span style={{ color: '#93c5fd', fontSize: 13 }}>আকাউন্ট ব্যালেন্স</span>
+            <FaGlobe color="#93c5fd" size={20} />
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500 text-xs">
-                <tr>
-                  <th className="px-5 py-3 text-left">Plan</th>
-                  <th className="px-5 py-3 text-left">Amount</th>
-                  <th className="px-5 py-3 text-left">Monthly</th>
-                  <th className="px-5 py-3 text-left">Status</th>
-                  <th className="px-5 py-3 text-left">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loans.slice(0, 5).map(loan => (
-                  <tr key={loan.id} className="border-t border-slate-50 hover:bg-slate-50">
-                    <td className="px-5 py-3 font-medium">{loan.loan_plan?.name}</td>
-                    <td className="px-5 py-3">৳{Number(loan.amount).toLocaleString()}</td>
-                    <td className="px-5 py-3">৳{Number(loan.monthly_installment).toLocaleString()}</td>
-                    <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusColor[loan.status]}`}>
-                        {loan.status.replace('_', ' ').toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-slate-400">{new Date(loan.created_at).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ color: '#fff', fontWeight: 900, fontSize: 28, marginBottom: 16 }}>
+            ৳{totalBalance.toLocaleString('bn-BD', { minimumFractionDigits: 2 }) || '৳০.০০'}
+          </div>
+          <Link to="/dashboard/apply" style={{
+            display: 'block', textAlign: 'center',
+            border: '2px solid #fff', borderRadius: 8, padding: '10px',
+            color: '#fff', fontWeight: 700, fontSize: 14, textDecoration: 'none',
+            ...BN,
+          }}>
+            ঋণ উত্তোলন
+          </Link>
+        </div>
+
+        {/* Profile completion prompt — shown if no NID/address */}
+        {!hasProfile && (
+          <div style={{
+            backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
+            textAlign: 'center', maxWidth: 380, margin: '0 auto',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}>
+            {/* ID card icon */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
+              <div style={{
+                width: 64, height: 44, backgroundColor: '#1d3a8a', borderRadius: 6,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative',
+              }}>
+                <div style={{ width: 18, height: 18, borderRadius: 2, backgroundColor: '#93c5fd', marginRight: 6 }} />
+                <div>
+                  <div style={{ width: 28, height: 3, backgroundColor: '#93c5fd', borderRadius: 2, marginBottom: 4 }} />
+                  <div style={{ width: 20, height: 3, backgroundColor: '#93c5fd', borderRadius: 2 }} />
+                </div>
+              </div>
+            </div>
+            <div style={{ color: '#374151', fontSize: 13, marginBottom: 16, lineHeight: 1.6 }}>
+              ঋণ আবেদনের জন্য প্রথমে আপনাকে ব্যক্তিগত তথ্য পূরণ করতে হবে!
+            </div>
+            <Link to="/dashboard/profile" style={{
+              display: 'inline-block', backgroundColor: '#1d3a8a',
+              color: '#fff', fontWeight: 700, fontSize: 14,
+              padding: '12px 28px', borderRadius: 8, textDecoration: 'none',
+              ...BN,
+            }}>
+              ব্যক্তিগত তথ্য পূরণ করুন
+            </Link>
+          </div>
+        )}
+
+        {/* If has profile — show loan summary */}
+        {hasProfile && loans.length > 0 && (
+          <div style={{ backgroundColor: '#fff', borderRadius: 12, padding: '20px', maxWidth: 380, margin: '0 auto', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontWeight: 700, color: '#1d3a8a', marginBottom: 12 }}>আমার ঋণ</div>
+            {loans.slice(0, 3).map(loan => (
+              <div key={loan.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #f3f4f6', fontSize: 13 }}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>{loan.loan_plan?.name}</div>
+                  <div style={{ color: '#6b7280', fontSize: 11 }}>৳{Number(loan.monthly_installment).toLocaleString()} / মাস</div>
+                </div>
+                <span style={{
+                  padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, alignSelf: 'center',
+                  backgroundColor: loan.status === 'approved' ? '#dcfce7' : loan.status === 'pending' ? '#fef9c3' : '#f3f4f6',
+                  color: loan.status === 'approved' ? '#15803d' : loan.status === 'pending' ? '#92400e' : '#6b7280',
+                }}>
+                  {loan.status === 'pending' ? 'অপেক্ষারত' : loan.status === 'approved' ? 'অনুমোদিত' : loan.status === 'disbursed' ? 'বিতরণ হয়েছে' : loan.status}
+                </span>
+              </div>
+            ))}
+            <Link to="/dashboard/loans" style={{ display: 'block', textAlign: 'center', marginTop: 12, color: '#1d3a8a', fontSize: 13, fontWeight: 600 }}>
+              সব ঋণ দেখুন →
+            </Link>
           </div>
         )}
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav active="/dashboard" />
     </div>
   )
 }
