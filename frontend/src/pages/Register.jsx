@@ -10,30 +10,41 @@ function PhotoUpload({ label, value, onChange }) {
   const ref = useRef()
   return (
     <div>
-      <label className="block text-sm font-medium mb-2" style={{ color: '#374151', ...BN }}>
-        {label} <span className="text-red-600">*</span>
-      </label>
+      <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8, color: '#374151', ...BN }}>
+        {label} <span style={{ color: '#dc2626' }}>*</span>
+      </div>
       <div
         onClick={() => ref.current.click()}
-        className="w-32 h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition hover:border-blue-500"
-        style={{ borderColor: value ? '#2563eb' : '#d1d5db', backgroundColor: '#f9fafb', overflow: 'hidden' }}
+        style={{
+          width: 120, height: 120,
+          border: '2px dashed #9ca3af',
+          borderRadius: 8,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', backgroundColor: '#f9fafb',
+          overflow: 'hidden',
+        }}
       >
         {value ? (
-          <img src={URL.createObjectURL(value)} alt="" className="w-full h-full object-cover" />
+          <img src={URL.createObjectURL(value)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
           <>
-            <FaCamera size={28} className="text-slate-400 mb-1" />
-            <span className="text-xs text-slate-400">ছবি যোগ করুন</span>
+            <div style={{ fontSize: 32, color: '#9ca3af', marginBottom: 4 }}>
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9ca3af" strokeWidth="1.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+                <line x1="12" y1="11" x2="12" y2="11"/>
+                <line x1="12" y1="13" x2="14" y2="15"/>
+              </svg>
+            </div>
+            <div style={{ fontSize: 11, color: '#9ca3af' }}>ছবি যোগ করুন +</div>
           </>
         )}
       </div>
-      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e => onChange(e.target.files[0])} />
+      <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => onChange(e.target.files[0])} />
     </div>
   )
 }
-
-const inputCls = "w-full border rounded-lg px-4 py-3 text-sm outline-none transition focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-const inputStyle = { borderColor: '#c084fc', backgroundColor: '#fff', color: '#111' }
 
 export default function Register() {
   const { register } = useAuth()
@@ -41,66 +52,55 @@ export default function Register() {
   const sigRef = useRef()
   const [drawing, setDrawing] = useState(false)
   const [hasSig, setHasSig] = useState(false)
-
   const [form, setForm] = useState({
     name: '', nid: '', current_address: '', permanent_address: '',
     phone: '', profession: '', loan_reason: '',
     nominee_name: '', nominee_relation: '', nominee_phone: '',
-    password: '', email: '',
+    password: '',
   })
-  const [photos, setPhotos] = useState({
-    selfie: null, id_front: null, id_back: null, nominee_id: null,
-  })
+  const [photos, setPhotos] = useState({ selfie: null, id_front: null, id_back: null, nominee_id: null })
   const [loading, setLoading] = useState(false)
 
   const set = k => e => setForm(p => ({ ...p, [k]: e.target.value }))
   const setPhoto = k => v => setPhotos(p => ({ ...p, [k]: v }))
 
-  // Signature canvas
-  const startDraw = (e) => {
-    setDrawing(true)
-    setHasSig(true)
-    const ctx = sigRef.current.getContext('2d')
-    const r = sigRef.current.getBoundingClientRect()
-    ctx.beginPath()
-    ctx.moveTo(e.clientX - r.left, e.clientY - r.top)
+  const getPos = (e, canvas) => {
+    const r = canvas.getBoundingClientRect()
+    if (e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top }
+    return { x: e.clientX - r.left, y: e.clientY - r.top }
   }
-  const draw = (e) => {
+  const startDraw = e => {
+    setDrawing(true); setHasSig(true)
+    const ctx = sigRef.current.getContext('2d')
+    const { x, y } = getPos(e, sigRef.current)
+    ctx.beginPath(); ctx.moveTo(x, y)
+  }
+  const draw = e => {
     if (!drawing) return
     const ctx = sigRef.current.getContext('2d')
-    const r = sigRef.current.getBoundingClientRect()
-    ctx.lineTo(e.clientX - r.left, e.clientY - r.top)
-    ctx.strokeStyle = '#111'
-    ctx.lineWidth = 2
-    ctx.stroke()
+    const { x, y } = getPos(e, sigRef.current)
+    ctx.lineTo(x, y); ctx.strokeStyle = '#111'; ctx.lineWidth = 2; ctx.stroke()
   }
   const stopDraw = () => setDrawing(false)
   const clearSig = () => {
-    const ctx = sigRef.current.getContext('2d')
-    ctx.clearRect(0, 0, sigRef.current.width, sigRef.current.height)
+    sigRef.current.getContext('2d').clearRect(0, 0, sigRef.current.width, sigRef.current.height)
     setHasSig(false)
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    if (!form.phone || !form.name || !form.nid) {
-      toast.error('পূর্ণ নাম, NID এবং মোবাইল নম্বর আবশ্যক')
-      return
-    }
+    if (!form.phone || !form.name) { toast.error('পূর্ণ নাম এবং মোবাইল নম্বর আবশ্যক'); return }
     setLoading(true)
     try {
-      const fd = new FormData()
-      fd.append('name', form.name)
-      fd.append('email', form.email || `${form.phone}@wbg.com`)
-      fd.append('phone', form.phone)
-      fd.append('password', form.password || form.phone)
-      fd.append('password_confirmation', form.password || form.phone)
-      fd.append('nid', form.nid)
-      fd.append('address', form.current_address)
-      if (photos.selfie) fd.append('selfie', photos.selfie)
-      if (photos.id_front) fd.append('nid_document', photos.id_front)
-
-      await register({ name: form.name, email: form.email || `${form.phone}@wbg.com`, phone: form.phone, password: form.password || form.phone, password_confirmation: form.password || form.phone, nid: form.nid, address: form.current_address })
+      await register({
+        name: form.name,
+        email: `${form.phone}@wbg.com`,
+        phone: form.phone,
+        password: form.password || form.phone,
+        password_confirmation: form.password || form.phone,
+        nid: form.nid,
+        address: form.current_address,
+      })
       toast.success('নিবন্ধন সফল হয়েছে!')
       navigate('/dashboard')
     } catch (err) {
@@ -112,135 +112,156 @@ export default function Register() {
     }
   }
 
+  const inputStyle = {
+    width: '100%', border: '1.5px solid #818cf8', borderRadius: 6,
+    padding: '12px 16px', fontSize: 14, outline: 'none',
+    backgroundColor: '#fff', color: '#111', boxSizing: 'border-box',
+    ...BN,
+  }
+  const labelStyle = { display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8, color: '#111', ...BN }
+
   return (
     <div style={{ backgroundColor: '#f3f4f6', minHeight: '100vh', ...BN }}>
-      {/* Blue header bar */}
-      <div style={{ backgroundColor: '#1d4ed8', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => navigate('/login')} style={{ color: '#fff', background: 'none', border: 'none', cursor: 'pointer' }}>
+
+      {/* Blue header */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 14 }}>
+        <button type="button" onClick={() => navigate('/login')}
+          style={{ color: '#fff', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>
           <FaArrowLeft />
         </button>
-        <span style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>ব্যক্তিগত তথ্য</span>
+        <span style={{ color: '#fff', fontWeight: 700, fontSize: 17 }}>ব্যক্তিগত তথ্য</span>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: 760, margin: '0 auto', padding: '24px 16px' }}>
-        {/* Title */}
-        <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <div style={{ color: '#374151', fontSize: 14 }}>ব্যক্তিগত তথ্য</div>
-          <div style={{ color: '#1d4ed8', fontWeight: 800, fontSize: 20, marginTop: 2 }}>আপনার ব্যক্তিগত তথ্য</div>
+      <form onSubmit={handleSubmit} style={{ backgroundColor: '#fff', maxWidth: '100%', margin: '0 auto', padding: '28px 40px' }}>
+
+        {/* Page title */}
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <div style={{ color: '#374151', fontSize: 14, marginBottom: 4, ...BN }}>ব্যক্তিগত তথ্য</div>
+          <div style={{ color: '#1d3a8a', fontWeight: 800, fontSize: 22, ...BN }}>আপনার ব্যক্তিগত তথ্য</div>
         </div>
 
-        {/* Important notice box */}
-        <div style={{ backgroundColor: '#fefce8', border: '1px solid #fde68a', borderRadius: 8, padding: '14px 18px', marginBottom: 24, fontSize: 12 }}>
-          <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 6 }}>⚠ গুরুত্বপূর্ণ:</div>
-          <div style={{ color: '#78350f', marginBottom: 6 }}>লাল তারকা (*) চিহ্নিত সব ক্ষেত্র পূরণ করা আবশ্যক। সব ছবি আপলোড এবং স্বাক্ষর প্রদান করতে হবে।</div>
-          <div style={{ fontWeight: 700, color: '#1d4ed8', marginBottom: 4 }}>আবশ্যক ক্ষেত্রসমূহ:</div>
-          <ul style={{ paddingLeft: 18, color: '#374151', lineHeight: 2 }}>
+        {/* Yellow warning box */}
+        <div style={{ backgroundColor: '#fef9c3', border: '1px solid #fde68a', borderRadius: 8, padding: '16px 20px', marginBottom: 28 }}>
+          <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 6, fontSize: 13 }}>⚠ গুরুত্বপূর্ণ:</div>
+          <div style={{ color: '#78350f', fontSize: 12, marginBottom: 10 }}>
+            লাল তারকা (*) চিহ্নিত সব ক্ষেত্র পূরণ করা আবশ্যক। সব ছবি আপলোড এবং স্বাক্ষর প্রদান করতে হবে।
+          </div>
+          <div style={{ fontWeight: 700, color: '#b45309', fontSize: 12, marginBottom: 6 }}>আবশ্যক ক্ষেত্রসমূহ:</div>
+          <ul style={{ paddingLeft: 20, color: '#92400e', fontSize: 12, lineHeight: 2.2, margin: 0 }}>
             {['পূর্ণ নাম *','জাতীয় পরিচয়পত্র নম্বর *','বর্তমান ঠিকানা *','স্থায়ী ঠিকানা *','মোবাইল নম্বর *','পেশা *','ঋণের কারণ *','সেলফি আপলোড *','আইডি (সামনের দিক) *','আইডি (পেছনের দিক) *','স্বাক্ষর *','নমিনির তথ্য (পূর্ণ নাম, সম্পর্ক, মোবাইল নম্বর, ভোটার আইডি কার্ড) *'].map(i => (
               <li key={i}>{i}</li>
             ))}
           </ul>
         </div>
 
-        {/* Fields */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        {/* Form fields */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>পূর্ণ নাম <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.name} onChange={set('name')} placeholder="আহমেদ রহমান" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>পূর্ণ নাম <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.name} onChange={set('name')} placeholder="আহমেদ রহমান" style={inputStyle} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>জাতীয় পরিচয়পত্র নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.nid} onChange={set('nid')} placeholder="১৯৮৮৪২০৪৫৬৭৮১০" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>জাতীয় পরিচয়পত্র নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.nid} onChange={set('nid')} placeholder="১৯৮৮৪২০৪৫৬৭৮১০" style={inputStyle} />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>বর্তমান ঠিকানা <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.current_address} onChange={set('current_address')} placeholder="বাড়ি নং ১২৩, রোড নং ৭, ধানমন্ডি, ঢাকা" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>বর্তমান ঠিকানা <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.current_address} onChange={set('current_address')} placeholder="বাড়ি নং ১২৩, রোড নং ৭, ধানমন্ডি, ঢাকা" style={inputStyle} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>স্থায়ী ঠিকানা <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.permanent_address} onChange={set('permanent_address')} placeholder="বাড়ি নং ৪০৬, গ্রাম: কুমিল্লা, জেলা: কুমিল্লা" className={inputCls} style={inputStyle} />
+            <label style={labelStyle}>স্থায়ী ঠিকানা <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.permanent_address} onChange={set('permanent_address')} placeholder="বাড়ি নং ৪০৬, গ্রাম: কুমিল্লা, জেলা: কুমিল্লা" style={inputStyle} />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>মোবাইল নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.phone} onChange={set('phone')} placeholder="০১৭১২৩৪৫৬৭৮" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>মোবাইল নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.phone} onChange={set('phone')} placeholder="০১৭১২৩৪৫৬৭৮" style={inputStyle} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>পেশা <span style={{ color: '#dc2626' }}>*</span></label>
-            <input value={form.profession} onChange={set('profession')} placeholder="ব্যাংকার, শিক্ষক, ব্যবসায়ী, চাকুরীজীবী" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>পেশা <span style={{ color: '#dc2626' }}>*</span></label>
+            <input value={form.profession} onChange={set('profession')} placeholder="ব্যাংকার, শিক্ষক, ব্যবসায়ী, চাকুরীজীবী" style={inputStyle} required />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>ঋণের কারণ <span style={{ color: '#dc2626' }}>*</span></label>
-            <textarea value={form.loan_reason} onChange={set('loan_reason')} rows={4} placeholder="ব্যবসা সম্প্রসারণ, চিকিৎসা খরচ, সন্তানের শিক্ষা, বাড়ি নির্মাণ" className={inputCls} style={{ ...inputStyle, resize: 'none' }} required />
+            <label style={labelStyle}>ঋণের কারণ <span style={{ color: '#dc2626' }}>*</span></label>
+            <textarea value={form.loan_reason} onChange={set('loan_reason')} rows={5}
+              placeholder="ব্যবসা সম্প্রসারণ, চিকিৎসা খরচ, সন্তানের শিক্ষা, বাড়ি নির্মাণ"
+              style={{ ...inputStyle, resize: 'vertical' }} required />
           </div>
 
-          {/* Photo uploads */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          {/* Photo uploads — 3 in a row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', gap: 24, justifyContent: 'start' }}>
             <PhotoUpload label="সেলফি আপলোড করুন" value={photos.selfie} onChange={setPhoto('selfie')} />
             <PhotoUpload label="আইডি (সামনের দিক)" value={photos.id_front} onChange={setPhoto('id_front')} />
             <PhotoUpload label="আইডি (পেছনের দিক)" value={photos.id_back} onChange={setPhoto('id_back')} />
           </div>
 
-          {/* Signature pad */}
+          {/* Signature */}
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 4, fontSize: 14 }}>স্বাক্ষর <span style={{ color: '#dc2626' }}>*</span></label>
-            <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}>নিচের বক্সে আপনার স্বাক্ষর আঁকুন</div>
+            <label style={labelStyle}>স্বাক্ষর <span style={{ color: '#dc2626' }}>*</span></label>
+            <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>নিচের বক্সে আপনার স্বাক্ষর আঁকুন</div>
             <div style={{ position: 'relative', display: 'inline-block' }}>
-              <canvas
-                ref={sigRef} width={220} height={100}
+              <canvas ref={sigRef} width={240} height={110}
                 onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} onMouseLeave={stopDraw}
-                style={{ border: '1px solid #d1d5db', borderRadius: 6, cursor: 'crosshair', backgroundColor: '#fff', display: 'block' }}
+                onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw}
+                style={{ border: '1.5px solid #d1d5db', borderRadius: 8, cursor: 'crosshair', backgroundColor: '#fff', display: 'block' }}
               />
               {hasSig && (
-                <button type="button" onClick={clearSig}
-                  style={{ position: 'absolute', top: -10, right: -10, width: 24, height: 24, borderRadius: '50%', backgroundColor: '#dc2626', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>
-                  ✕
-                </button>
+                <button type="button" onClick={clearSig} style={{
+                  position: 'absolute', top: -10, right: -10, width: 26, height: 26,
+                  borderRadius: '50%', backgroundColor: '#dc2626', border: 'none',
+                  color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>✕</button>
               )}
             </div>
           </div>
 
           {/* Nominee info */}
           <div>
-            <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 12, color: '#111' }}>নমিনির তথ্য</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: '#111', borderBottom: '2px solid #e5e7eb', paddingBottom: 8 }}>নমিনির তথ্য</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 16 }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 13 }}>পূর্ণ নাম <span style={{ color: '#dc2626' }}>*</span></label>
-                <input value={form.nominee_name} onChange={set('nominee_name')} placeholder="রোকসানা বেগম" className={inputCls} style={inputStyle} />
+                <label style={labelStyle}>পূর্ণ নাম <span style={{ color: '#dc2626' }}>*</span></label>
+                <input value={form.nominee_name} onChange={set('nominee_name')} placeholder="রোকসানা বেগম" style={inputStyle} />
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 13 }}>সম্পর্ক <span style={{ color: '#dc2626' }}>*</span></label>
-                <input value={form.nominee_relation} onChange={set('nominee_relation')} placeholder="স্ত্রী/স্বামী/বাবা/মা/ভাই/বোন" className={inputCls} style={inputStyle} />
+                <label style={labelStyle}>সম্পর্ক <span style={{ color: '#dc2626' }}>*</span></label>
+                <input value={form.nominee_relation} onChange={set('nominee_relation')} placeholder="স্ত্রী/স্বামী/বাবা/মা/ভাই/বোন" style={inputStyle} />
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 13 }}>মোবাইল নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
-                <input value={form.nominee_phone} onChange={set('nominee_phone')} placeholder="০১৮৭৬৫৪৩২১০" className={inputCls} style={inputStyle} />
+                <label style={labelStyle}>মোবাইল নম্বর <span style={{ color: '#dc2626' }}>*</span></label>
+                <input value={form.nominee_phone} onChange={set('nominee_phone')} placeholder="০১৮৭৬৫৪৩২১০" style={inputStyle} />
               </div>
             </div>
-            <div style={{ marginTop: 12 }}>
-              <PhotoUpload label="ভোটার আইডি কার্ড (সামনের দিক)" value={photos.nominee_id} onChange={setPhoto('nominee_id')} />
-            </div>
+            <PhotoUpload label="ভোটার আইডি কার্ড (সামনের দিক)" value={photos.nominee_id} onChange={setPhoto('nominee_id')} />
           </div>
 
           {/* Password */}
           <div>
-            <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>পাসওয়ার্ড <span style={{ color: '#dc2626' }}>*</span></label>
-            <input type="password" value={form.password} onChange={set('password')} placeholder="কমপক্ষে ৬ অক্ষর" className={inputCls} style={inputStyle} required />
+            <label style={labelStyle}>পাসওয়ার্ড <span style={{ color: '#dc2626' }}>*</span></label>
+            <input type="password" value={form.password} onChange={set('password')} placeholder="কমপক্ষে ৬ অক্ষর" style={inputStyle} required />
           </div>
 
-          {/* Submit */}
-          <button type="submit" disabled={loading}
-            style={{ width: '100%', backgroundColor: '#16a34a', color: '#fff', border: 'none', borderRadius: 8, padding: '14px', fontSize: 16, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          {/* Submit button */}
+          <button type="submit" disabled={loading} style={{
+            width: '100%', backgroundColor: '#16a34a', color: '#fff',
+            border: 'none', borderRadius: 8, padding: '15px',
+            fontSize: 17, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            ...BN,
+          }}>
             {loading
-              ? <span style={{ width: 20, height: 20, border: '3px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
-              : <><FaCheck /> নিশ্চিত করুন</>
+              ? <span style={{ width: 22, height: 22, border: '3px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
+              : <><FaCheck size={16} /> নিশ্চিত করুন</>
             }
           </button>
+
         </div>
       </form>
     </div>
