@@ -22,26 +22,27 @@ function PhotoUpload({ label, value, onChange }) {
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', backgroundColor: '#f9fafb',
-          overflow: 'hidden',
+          overflow: 'hidden', position: 'relative',
         }}
       >
         {value ? (
           <img src={URL.createObjectURL(value)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
           <>
-            <div style={{ fontSize: 32, color: '#9ca3af', marginBottom: 4 }}>
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9ca3af" strokeWidth="1.5">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-                <line x1="12" y1="11" x2="12" y2="11"/>
-                <line x1="12" y1="13" x2="14" y2="15"/>
-              </svg>
-            </div>
-            <div style={{ fontSize: 11, color: '#9ca3af' }}>ছবি যোগ করুন +</div>
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#9ca3af" strokeWidth="1.5" style={{ marginBottom: 4 }}>
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+              <line x1="12" y1="9" x2="12" y2="9" strokeLinecap="round" strokeWidth="2.5"/>
+            </svg>
+            <div style={{ fontSize: 20, color: '#9ca3af', fontWeight: 700, lineHeight: 1 }}>+</div>
           </>
         )}
       </div>
-      <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => onChange(e.target.files[0])} />
+      <input
+        ref={ref} type="file" accept="image/*"
+        style={{ position: 'absolute', width: 0, height: 0, opacity: 0 }}
+        onChange={e => e.target.files[0] && onChange(e.target.files[0])}
+      />
     </div>
   )
 }
@@ -66,22 +67,37 @@ export default function Register() {
 
   const getPos = (e, canvas) => {
     const r = canvas.getBoundingClientRect()
-    if (e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top }
-    return { x: e.clientX - r.left, y: e.clientY - r.top }
+    const scaleX = canvas.width / r.width
+    const scaleY = canvas.height / r.height
+    if (e.touches) return {
+      x: (e.touches[0].clientX - r.left) * scaleX,
+      y: (e.touches[0].clientY - r.top) * scaleY
+    }
+    return {
+      x: (e.clientX - r.left) * scaleX,
+      y: (e.clientY - r.top) * scaleY
+    }
   }
   const startDraw = e => {
+    e.preventDefault()
     setDrawing(true); setHasSig(true)
     const ctx = sigRef.current.getContext('2d')
     const { x, y } = getPos(e, sigRef.current)
     ctx.beginPath(); ctx.moveTo(x, y)
   }
   const draw = e => {
+    e.preventDefault()
     if (!drawing) return
     const ctx = sigRef.current.getContext('2d')
     const { x, y } = getPos(e, sigRef.current)
-    ctx.lineTo(x, y); ctx.strokeStyle = '#111'; ctx.lineWidth = 2; ctx.stroke()
+    ctx.lineTo(x, y)
+    ctx.strokeStyle = '#1e293b'
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    ctx.stroke()
   }
-  const stopDraw = () => setDrawing(false)
+  const stopDraw = e => { e?.preventDefault(); setDrawing(false) }
   const clearSig = () => {
     sigRef.current.getContext('2d').clearRect(0, 0, sigRef.current.width, sigRef.current.height)
     setHasSig(false)
@@ -205,18 +221,24 @@ export default function Register() {
           <div>
             <label style={labelStyle}>স্বাক্ষর <span style={{ color: '#dc2626' }}>*</span></label>
             <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>নিচের বক্সে আপনার স্বাক্ষর আঁকুন</div>
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-              <canvas ref={sigRef} width={240} height={110}
+            <div style={{ position: 'relative', display: 'inline-block', width: '100%', maxWidth: 500 }}>
+              <canvas ref={sigRef} width={900} height={200}
                 onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} onMouseLeave={stopDraw}
                 onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw}
-                style={{ border: '1.5px solid #d1d5db', borderRadius: 8, cursor: 'crosshair', backgroundColor: '#fff', display: 'block' }}
+                style={{
+                  border: '1.5px solid #818cf8', borderRadius: 8,
+                  cursor: 'crosshair', backgroundColor: '#fff',
+                  display: 'block', width: '100%', maxWidth: 500, height: 120,
+                  touchAction: 'none',
+                }}
               />
               {hasSig && (
                 <button type="button" onClick={clearSig} style={{
-                  position: 'absolute', top: -10, right: -10, width: 26, height: 26,
+                  position: 'absolute', top: -10, right: -10, width: 28, height: 28,
                   borderRadius: '50%', backgroundColor: '#dc2626', border: 'none',
-                  color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                  color: '#fff', cursor: 'pointer', fontSize: 14, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
                 }}>✕</button>
               )}
             </div>
