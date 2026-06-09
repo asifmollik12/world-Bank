@@ -147,8 +147,38 @@ export default function Overview() {
           </div>
         )}
 
-        {/* If has profile — show loan summary */}
-        {hasProfile && loans.length > 0 && (
+        {/* Pending review state — loan submitted, waiting */}
+        {hasProfile && loans.length > 0 && loans.every(l => ['pending','under_review'].includes(l.status)) && (
+          <div style={{
+            backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
+            textAlign: 'center', maxWidth: 380, margin: '0 auto',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}>
+            {/* Pause icon — red rounded square */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+              <div style={{
+                width: 56, height: 44, backgroundColor: '#dc2626', borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                <div style={{ width: 6, height: 22, backgroundColor: '#fff', borderRadius: 2 }} />
+                <div style={{ width: 6, height: 22, backgroundColor: '#fff', borderRadius: 2 }} />
+              </div>
+            </div>
+            <div style={{ color: '#374151', fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>
+              আপনার ঋণের আবেদন পর্যবেক্ষণ করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন!
+            </div>
+            <button style={{
+              backgroundColor: '#dc2626', color: '#fff', border: 'none',
+              borderRadius: 8, padding: '12px 20px', fontSize: 14, fontWeight: 700,
+              cursor: 'pointer', ...BN,
+            }}>
+              অনুমোদন পেতে কতক্ষণ লাগতে পারে?
+            </button>
+          </div>
+        )}
+
+        {/* Approved/Disbursed loans */}
+        {hasProfile && loans.some(l => ['approved','disbursed','completed'].includes(l.status)) && (
           <div style={{ backgroundColor: '#fff', borderRadius: 12, padding: '20px', maxWidth: 380, margin: '0 auto', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontWeight: 700, color: '#1d3a8a', marginBottom: 12 }}>আমার ঋণ</div>
             {loans.slice(0, 3).map(loan => (
