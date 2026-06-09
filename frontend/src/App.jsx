@@ -23,6 +23,7 @@ import MyLoans from './pages/dashboard/MyLoans'
 import Repayments from './pages/dashboard/Repayments'
 import Notifications from './pages/dashboard/Notifications'
 import Profile from './pages/dashboard/Profile'
+import BankAccount from './pages/dashboard/BankAccount'
 
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Overview />} />
             <Route path="apply" element={<ApplyLoan />} />
+            <Route path="bank-account" element={<BankAccount />} />
             <Route path="loans" element={<MyLoans />} />
             <Route path="repayments" element={<Repayments />} />
             <Route path="notifications" element={<Notifications />} />

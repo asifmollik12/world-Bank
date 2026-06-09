@@ -59,7 +59,7 @@ export default function ApplyLoan() {
         purpose:         'ঋণ আবেদন',
       })
       toast.success('ঋণ আবেদন সফল হয়েছে!')
-      navigate('/dashboard/loans')
+      navigate('/dashboard/bank-account')
     } catch (err) {
       const errors = err.response?.data?.errors
       if (errors) Object.values(errors).flat().forEach(m => toast.error(m))
