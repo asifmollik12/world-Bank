@@ -97,53 +97,55 @@ export default function Overview() {
 
         {/* Balance card */}
         <div style={{
-          backgroundColor: '#1d3a8a', borderRadius: 12, padding: '20px 24px',
-          marginBottom: 20, boxShadow: '0 4px 20px rgba(29,58,138,0.25)',
-          maxWidth: 360, margin: '0 auto 20px',
+          backgroundColor: '#1d3a8a', borderRadius: 12, padding: '22px 24px',
+          marginBottom: 28, boxShadow: '0 4px 20px rgba(29,58,138,0.25)',
+          maxWidth: 560, margin: '0 auto 28px',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ color: '#93c5fd', fontSize: 13 }}>আকাউন্ট ব্যালেন্স</span>
-            <FaGlobe color="#93c5fd" size={18} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <span style={{ color: '#93c5fd', fontSize: 14 }}>আকাউন্ট ব্যালেন্স</span>
+            {/* Globe icon bigger */}
+            <svg viewBox="0 0 100 100" width="32" height="32" fill="none" stroke="#93c5fd" strokeWidth="4">
+              <circle cx="50" cy="50" r="44"/>
+              <ellipse cx="50" cy="50" rx="22" ry="44"/>
+              <ellipse cx="50" cy="50" rx="44" ry="17"/>
+              <line x1="6" y1="50" x2="94" y2="50"/>
+            </svg>
           </div>
-          <div style={{ color: '#fff', fontWeight: 900, fontSize: 28, marginBottom: 16 }}>
+          <div style={{ color: '#fff', fontWeight: 900, fontSize: 32, marginBottom: 20 }}>
             ৳{totalBalance > 0 ? totalBalance.toLocaleString() + '.00' : '৳০.০০'}
           </div>
           <Link to="/dashboard/apply" style={{
             display: 'block', textAlign: 'center',
-            border: '1.5px solid #fff', borderRadius: 8, padding: '10px',
-            color: '#fff', fontWeight: 700, fontSize: 14, textDecoration: 'none', ...BN,
+            border: '1.5px solid #fff', borderRadius: 8, padding: '12px',
+            color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none', ...BN,
           }}>
             ঋণ উত্তোলন
           </Link>
         </div>
 
-        {/* ── State 1: No loans — fill profile prompt ── */}
+        {/* ── State 1: No loans — fill profile prompt (no card, directly on grey bg) ── */}
         {noLoans && (
-          <div style={{
-            backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
-            textAlign: 'center', maxWidth: 360, margin: '0 auto',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}>
-            {/* ID card icon */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <div style={{ textAlign: 'center', maxWidth: 560, margin: '0 auto', padding: '8px 0' }}>
+            {/* ID card icon — bigger, blue */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
               <div style={{
-                width: 60, height: 42, backgroundColor: '#1d3a8a', borderRadius: 6,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                width: 80, height: 58, backgroundColor: '#1d3a8a', borderRadius: 8,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}>
-                <div style={{ width: 16, height: 16, borderRadius: 2, backgroundColor: '#93c5fd' }} />
+                <div style={{ width: 22, height: 22, borderRadius: 3, backgroundColor: '#93c5fd' }} />
                 <div>
-                  <div style={{ width: 24, height: 3, backgroundColor: '#93c5fd', borderRadius: 2, marginBottom: 4 }} />
-                  <div style={{ width: 18, height: 3, backgroundColor: '#93c5fd', borderRadius: 2 }} />
+                  <div style={{ width: 30, height: 4, backgroundColor: '#93c5fd', borderRadius: 2, marginBottom: 6 }} />
+                  <div style={{ width: 22, height: 4, backgroundColor: '#93c5fd', borderRadius: 2 }} />
                 </div>
               </div>
             </div>
-            <div style={{ color: '#374151', fontSize: 13, marginBottom: 18, lineHeight: 1.7 }}>
+            <div style={{ color: '#374151', fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>
               ঋণ আবেদনের জন্য প্রথমে আপনাকে ব্যক্তিগত তথ্য পূরণ করতে হবে!
             </div>
             <Link to="/dashboard/profile" style={{
               display: 'inline-block', backgroundColor: '#1d3a8a',
-              color: '#fff', fontWeight: 700, fontSize: 14,
-              padding: '12px 28px', borderRadius: 8, textDecoration: 'none', ...BN,
+              color: '#fff', fontWeight: 700, fontSize: 15,
+              padding: '14px 40px', borderRadius: 8, textDecoration: 'none', ...BN,
             }}>
               ব্যক্তিগত তথ্য পূরণ করুন
             </Link>
@@ -152,12 +154,7 @@ export default function Overview() {
 
         {/* ── State 2: Loan pending/under review ── */}
         {hasPending && (
-          <div style={{
-            backgroundColor: '#fff', borderRadius: 12, padding: '28px 24px',
-            textAlign: 'center', maxWidth: 360, margin: '0 auto',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}>
-            {/* Pause icon */}
+          <div style={{ textAlign: 'center', maxWidth: 560, margin: '0 auto', padding: '8px 0' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
               <div style={{
                 width: 52, height: 42, backgroundColor: '#dc2626', borderRadius: 8,
@@ -172,7 +169,7 @@ export default function Overview() {
             </div>
             <button style={{
               backgroundColor: '#dc2626', color: '#fff', border: 'none',
-              borderRadius: 8, padding: '12px 20px', fontSize: 14, fontWeight: 700,
+              borderRadius: 8, padding: '14px 32px', fontSize: 14, fontWeight: 700,
               cursor: 'pointer', ...BN,
             }}>
               অনুমোদন পেতে কতক্ষণ লাগতে পারে?
