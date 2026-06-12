@@ -39,9 +39,9 @@ export default function ChangePassword() {
   const eyeBtn = { position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 16 }
 
   const fields = [
-    { key: 'current_password', label: 'বর্তমান পাসওয়ার্ড', show: showCur, toggle: () => setShowCur(v => !v) },
-    { key: 'password',         label: 'নতুন পাসওয়ার্ড',   show: showNew, toggle: () => setShowNew(v => !v) },
-    { key: 'password_confirmation', label: 'পাসওয়ার্ড নিশ্চিত করুন', show: showCon, toggle: () => setShowCon(v => !v) },
+    { key: 'current_password', label: 'বর্তমান পাসওয়ার্ড', placeholder: 'আপনার বর্তমান পাসওয়ার্ড দিখুন', show: showCur, toggle: () => setShowCur(v => !v) },
+    { key: 'password',         label: 'নতুন পাসওয়ার্ড',   placeholder: 'নতুন পাসওয়ার্ড দিখুন', show: showNew, toggle: () => setShowNew(v => !v) },
+    { key: 'password_confirmation', label: 'পাসওয়ার্ড নিশ্চিত করুন', placeholder: 'পাসওয়ার্ড পুনরায় দিখুন', show: showCon, toggle: () => setShowCon(v => !v) },
   ]
 
   return (
@@ -57,16 +57,16 @@ export default function ChangePassword() {
       </div>
 
       {/* Blue title banner */}
-      <div style={{ backgroundColor: '#3b5fc0', padding: '18px 24px', textAlign: 'center', borderRadius: '0 0 16px 16px', marginBottom: 20 }}>
-        <span style={{ color: '#fff', fontWeight: 800, fontSize: 20, ...BN }}>পাসওয়ার্ড পরিবর্তন করুন</span>
+      <div style={{ backgroundColor: '#fff', padding: '20px 24px 4px', textAlign: 'center' }}>
+        <span style={{ color: '#111', fontWeight: 800, fontSize: 20, ...BN }}>পাসওয়ার্ড পরিবর্তন করুন</span>
       </div>
 
       <div style={{ maxWidth: 520, margin: '0 auto', padding: '0 16px' }}>
 
         {/* Form card */}
-        <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 28px', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', marginBottom: 20 }}>
+        <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '20px 28px 28px', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', marginBottom: 20 }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {fields.map(({ key, label, show, toggle }) => (
+            {fields.map(({ key, label, placeholder, show, toggle }) => (
               <div key={key}>
                 <label style={labelStyle}>{label}</label>
                 <div style={inputWrap}>
@@ -74,6 +74,7 @@ export default function ChangePassword() {
                     type={show ? 'text' : 'password'}
                     value={form[key]}
                     onChange={set(key)}
+                    placeholder={placeholder}
                     style={inputStyle}
                     required
                   />
