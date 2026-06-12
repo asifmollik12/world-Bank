@@ -83,7 +83,14 @@ export default function PersonalInfo() {
         address: form.current_address || undefined,
       })
       // Save all form data to localStorage for preview
-      localStorage.setItem('wbg_personal_info', JSON.stringify(form))
+      localStorage.setItem('wbg_personal_info', JSON.stringify({
+        ...form,
+        submitted_at: new Date().toISOString(),
+        selfie_url:     photos.selfie    ? URL.createObjectURL(photos.selfie)    : null,
+        id_front_url:   photos.id_front  ? URL.createObjectURL(photos.id_front)  : null,
+        id_back_url:    photos.id_back   ? URL.createObjectURL(photos.id_back)   : null,
+        nominee_id_url: photos.nominee_id ? URL.createObjectURL(photos.nominee_id) : null,
+      }))
       await refreshUser()
       toast.success('ব্যক্তিগত তথ্য সংরক্ষিত হয়েছে!')
       navigate('/dashboard/apply')
