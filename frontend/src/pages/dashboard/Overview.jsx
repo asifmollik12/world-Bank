@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import api from '../../api/axios'
-import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaGlobe } from 'react-icons/fa'
+import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaGlobe, FaTimes } from 'react-icons/fa'
 
 const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
@@ -42,6 +42,7 @@ function BottomNav({ active }) {
 export default function Overview() {
   const { user } = useAuth()
   const [loans, setLoans] = useState([])
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     api.get('/loans').then(r => setLoans(r.data)).catch(() => {})
@@ -166,7 +167,7 @@ export default function Overview() {
             <div style={{ color: '#374151', fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>
               আপনার ঋণের আবেদন পর্যবেক্ষণ করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন!
             </div>
-            <button style={{
+            <button onClick={() => setShowModal(true)} style={{
               backgroundColor: '#dc2626', color: '#fff', border: 'none',
               borderRadius: 8, padding: '14px 32px', fontSize: 14, fontWeight: 700,
               cursor: 'pointer', ...BN,
@@ -202,6 +203,28 @@ export default function Overview() {
           </div>
         )}
       </div>
+
+      {/* ── Approval Time Modal ── */}
+      {showModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: '28px 28px 24px', width: '100%', maxWidth: 420, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', position: 'relative', ...BN }}>
+            <button onClick={() => setShowModal(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 18 }}>
+              <FaTimes />
+            </button>
+            <h3 style={{ fontWeight: 800, fontSize: 20, color: '#111', marginBottom: 20, paddingRight: 24, lineHeight: 1.4, ...BN }}>
+              অনুমোদন পেতে কতক্ষণ লাগতে পারে?
+            </h3>
+            <div style={{ color: '#374151', fontSize: 15, lineHeight: 1.85, display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
+              <p style={{ margin: 0 }}>ঋণ অনুমোদনে কয়েক ঘন্টা বা কয়েক দিন সময় লাগতে পারে, যা নির্ভর করে আপনি কত টাকা ঋণ নিচ্ছেন এবং আপনার ক্রেডিট ইতিহাসের উপর।</p>
+              <p style={{ margin: 0 }}>ছোট ঋণ পেতে একদিন পর্যন্ত সময় লাগতে পারে এবং বড় ঋণ পেতে তিন দিন পর্যন্ত সময় লাগতে পারে।</p>
+              <p style={{ margin: 0 }}>আপনার যদি আরও তথ্য বা সহায়তার প্রয়োজন হয়, তাহলে অনুগ্রহ করে আমাদের গ্রাহক পরিষেবা প্রতিনিধির সাথে যোগাযোগ করুন।</p>
+            </div>
+            <button onClick={() => setShowModal(false)} style={{ width: '100%', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: 10, padding: '14px', fontSize: 16, fontWeight: 700, cursor: 'pointer', ...BN }}>
+              বন্ধ করুন
+            </button>
+          </div>
+        </div>
+      )}
 
       <BottomNav active="/dashboard" />
     </div>
