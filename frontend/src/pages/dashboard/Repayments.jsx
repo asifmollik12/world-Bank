@@ -1,142 +1,164 @@
-import { useEffect, useState } from 'react'
-import api from '../../api/axios'
-import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
+import { Link } from 'react-router-dom'
+import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell } from 'react-icons/fa'
 
-export default function Repayments() {
-  const [repayments, setRepayments] = useState([])
-  const [loans, setLoans] = useState([])
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ loan_application_id: '', amount: '', transaction_id: '', payment_method: 'bkash' })
-  const [loading, setLoading] = useState(false)
+const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
 
-  useEffect(() => {
-    api.get('/repayments').then(r => setRepayments(r.data))
-    api.get('/loans').then(r => setLoans(r.data.filter(l => l.status === 'disbursed')))
-  }, [])
+function BottomNav({ active }) {
+  const items = [
+    { icon: <FaHome size={20} />,       label: 'হোম',      path: '/dashboard' },
+    { icon: <FaLayerGroup size={20} />, label: 'ঋণ',       path: '/dashboard/loans' },
+    { icon: <FaCreditCard size={20} />, label: 'কার্ড',    path: '/dashboard/repayments' },
+    { icon: <FaHeadset size={20} />,    label: 'সাহায়া',  path: '/dashboard/notifications' },
+    { icon: <FaUser size={20} />,       label: 'প্রোফাইল', path: '/dashboard/profile' },
+  ]
+  return (
+    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 14px', zIndex: 50, boxShadow: '0 -2px 10px rgba(0,0,0,0.06)' }}>
+      {items.map(item => {
+        const isActive = active === item.path
+        return (
+          <Link key={item.path} to={item.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, color: isActive ? '#1d3a8a' : '#9ca3af', textDecoration: 'none', fontSize: 10, fontWeight: isActive ? 700 : 400, ...BN }}>
+            {item.icon}<span>{item.label}</span>
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    try {
-      await api.post('/repayments', form)
-      toast.success('Repayment submitted!')
-      setShowForm(false)
-      api.get('/repayments').then(r => setRepayments(r.data))
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed')
-    } finally {
-      setLoading(false)
-    }
-  }
+// Card chip SVG
+function Chip() {
+  return (
+    <svg viewBox="0 0 50 40" width="52" height="42">
+      <rect width="50" height="40" rx="5" fill="#d4a017"/>
+      <rect x="5" y="5" width="40" height="30" rx="3" fill="#c49010" opacity="0.6"/>
+      {/* Chip lines */}
+      <line x1="25" y1="5" x2="25" y2="35" stroke="#b8860b" strokeWidth="1.5"/>
+      <line x1="5" y1="20" x2="45" y2="20" stroke="#b8860b" strokeWidth="1.5"/>
+      <line x1="5" y1="12" x2="45" y2="12" stroke="#b8860b" strokeWidth="1"/>
+      <line x1="5" y1="28" x2="45" y2="28" stroke="#b8860b" strokeWidth="1"/>
+      <rect x="15" y="12" width="20" height="16" rx="2" fill="#e8c84a" opacity="0.5"/>
+    </svg>
+  )
+}
 
-  const statusColor = { pending: 'bg-yellow-100 text-yellow-700', confirmed: 'bg-green-100 text-green-700', failed: 'bg-red-100 text-red-700' }
+// Globe SVG for back of card
+function Globe() {
+  return (
+    <svg viewBox="0 0 100 100" width="44" height="44" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="4">
+      <circle cx="50" cy="50" r="44"/>
+      <ellipse cx="50" cy="50" rx="22" ry="44"/>
+      <ellipse cx="50" cy="50" rx="44" ry="17"/>
+      <line x1="6" y1="50" x2="94" y2="50"/>
+    </svg>
+  )
+}
+
+export default function CardPage() {
+  const { user } = useAuth()
+  const name = user?.name || 'Card Holder'
+  const initials = name.charAt(0).toUpperCase()
+
+  // Generate a deterministic fake card number from user id
+  const uid = user?.id || 1
+  const last4 = String(1000 + (uid * 7 % 9000)).padStart(4, '0')
+  const first4 = '4244'
+  const cardNumber = `${first4}**********${last4}`
+
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'
+
+  const gradient = 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #ec4899 100%)'
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-blue-900">Repayments</h1>
-          <p className="text-slate-500 text-sm">View and submit your loan repayments</p>
-        </div>
-        {loans.length > 0 && (
-          <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
-            + Submit Repayment
-          </button>
-        )}
-      </div>
+    <div style={{ backgroundColor: '#fff', minHeight: '100vh', paddingBottom: 80, ...BN }}>
 
-      {/* Repayment form */}
-      {showForm && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6 shadow-sm">
-          <h3 className="font-semibold text-blue-900 mb-4">New Repayment</h3>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Select Loan *</label>
-              <select value={form.loan_application_id}
-                onChange={e => setForm({ ...form, loan_application_id: e.target.value })}
-                className="input-field" required>
-                <option value="">-- Select loan --</option>
-                {loans.map(l => (
-                  <option key={l.id} value={l.id}>
-                    {l.loan_plan?.name} — ৳{Number(l.amount).toLocaleString()}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Amount (৳) *</label>
-              <input type="number" placeholder="Amount" value={form.amount}
-                onChange={e => setForm({ ...form, amount: e.target.value })}
-                className="input-field" required />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Payment Method *</label>
-              <select value={form.payment_method} onChange={e => setForm({ ...form, payment_method: e.target.value })} className="input-field">
-                <option value="bkash">bKash</option>
-                <option value="nagad">Nagad</option>
-                <option value="bank_transfer">Bank Transfer</option>
-                <option value="rocket">Rocket</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Transaction ID *</label>
-              <input type="text" placeholder="TXN ID" value={form.transaction_id}
-                onChange={e => setForm({ ...form, transaction_id: e.target.value })}
-                className="input-field" required />
-            </div>
-            <div className="sm:col-span-2 flex gap-3">
-              <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
-                {loading && <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />}
-                Submit
-              </button>
-              <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Repayment history */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100">
-        <div className="px-5 py-4 border-b border-slate-100">
-          <h2 className="font-semibold text-blue-900">Repayment History</h2>
-        </div>
-        {repayments.length === 0 ? (
-          <div className="p-10 text-center text-slate-400">No repayments yet.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500 text-xs">
-                <tr>
-                  <th className="px-5 py-3 text-left">Loan</th>
-                  <th className="px-5 py-3 text-left">Amount</th>
-                  <th className="px-5 py-3 text-left">Method</th>
-                  <th className="px-5 py-3 text-left">TXN ID</th>
-                  <th className="px-5 py-3 text-left">Status</th>
-                  <th className="px-5 py-3 text-left">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {repayments.map(r => (
-                  <tr key={r.id} className="border-t border-slate-50 hover:bg-slate-50">
-                    <td className="px-5 py-3 font-medium">{r.loan_application?.loan_plan?.name || 'N/A'}</td>
-                    <td className="px-5 py-3 font-semibold text-blue-900">৳{Number(r.amount).toLocaleString()}</td>
-                    <td className="px-5 py-3 capitalize">{r.payment_method}</td>
-                    <td className="px-5 py-3 text-slate-500 font-mono text-xs">{r.transaction_id}</td>
-                    <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusColor[r.status]}`}>
-                        {r.status.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-slate-400">{new Date(r.created_at).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Navbar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>World Bank</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <FaBell color="#fff" size={18} />
+          <div style={{ width: 38, height: 38, borderRadius: '50%', border: '2px dashed #93c5fd', backgroundColor: '#1e40af', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 15 }}>
+            {initials}
           </div>
-        )}
+          <span style={{ color: '#fff', fontSize: 13, fontWeight: 500 }}>{name}</span>
+        </div>
       </div>
+
+      {/* Greeting */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '8px 20px 22px' }}>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>{greeting}, {name}!</div>
+        <div style={{ color: '#93c5fd', fontSize: 12, marginTop: 2 }}>বিশ্ব ব্যাংক ঋণে আপনাকে স্বাগতম!</div>
+      </div>
+
+      {/* Cards */}
+      <div style={{ padding: '28px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+
+        {/* Front of card */}
+        <div style={{ width: '100%', maxWidth: 380, borderRadius: 16, padding: '24px 24px 20px', background: gradient, color: '#fff', boxShadow: '0 8px 32px rgba(79,70,229,0.35)', position: 'relative', overflow: 'hidden' }}>
+          {/* Subtle circle decorations */}
+          <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.06)' }} />
+          <div style={{ position: 'absolute', bottom: -30, left: -20, width: 120, height: 120, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.04)' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+            <Chip />
+            <span style={{ fontStyle: 'italic', fontWeight: 900, fontSize: 28, letterSpacing: 1, color: '#fff', fontFamily: 'Georgia, serif' }}>VISA</span>
+          </div>
+
+          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, marginBottom: 20, fontFamily: 'monospace' }}>
+            {cardNumber}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, marginBottom: 3 }}>CARD HOLDER</div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>{name}</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, marginBottom: 3 }}>VALID TILL</div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>12 / 29</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Back of card */}
+        <div style={{ width: '100%', maxWidth: 380, borderRadius: 16, padding: '20px 0 20px', background: gradient, color: '#fff', boxShadow: '0 8px 32px rgba(79,70,229,0.25)', overflow: 'hidden', position: 'relative' }}>
+          {/* Decorative circle */}
+          <div style={{ position: 'absolute', top: -30, right: -30, width: 130, height: 130, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px 16px' }}>
+            <Globe />
+            <span style={{ fontStyle: 'italic', fontWeight: 900, fontSize: 28, letterSpacing: 1, color: '#fff', fontFamily: 'Georgia, serif' }}>VISA</span>
+          </div>
+
+          {/* Magnetic stripe */}
+          <div style={{ width: '100%', height: 46, backgroundColor: '#0a0a0a', margin: '0 0 20px' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 24px' }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, marginBottom: 4 }}>CVV</div>
+              <div style={{ fontWeight: 700, fontSize: 18, letterSpacing: 3 }}>***</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, marginBottom: 4 }}>STATUS</div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>Inactive</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Inactive button */}
+        <div style={{ width: '100%', maxWidth: 380 }}>
+          <button style={{
+            width: '100%', backgroundColor: '#ef4444', color: '#fff',
+            border: 'none', borderRadius: 10, padding: '15px',
+            fontSize: 17, fontWeight: 700, cursor: 'default', ...BN,
+          }}>
+            কার্ডটি সক্রিয় নয়!
+          </button>
+        </div>
+      </div>
+
+      <BottomNav active="/dashboard/repayments" />
     </div>
   )
 }
