@@ -58,7 +58,6 @@ export default function MyLoans() {
   const { user } = useAuth()
   const [loans, setLoans]   = useState([])
   const [loading, setLoading] = useState(true)
-  const hour = new Date().getHours()
 
   useEffect(() => {
     api.get('/loans').then(r => setLoans(r.data)).finally(() => setLoading(false))
@@ -81,20 +80,11 @@ export default function MyLoans() {
         </div>
       </div>
 
-      {/* Marquee notice */}
-      <div style={{ backgroundColor: '#1d3a8a', borderTop: '1px solid #2d4eaa', padding: '8px 0', overflow: 'hidden' }}>
-        <div style={{ color: '#fff', fontSize: 13, whiteSpace: 'nowrap', animation: 'marquee 18s linear infinite', paddingLeft: '100%', ...BN }}>
+      {/* Static notice bar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '14px 24px', textAlign: 'center' }}>
+        <span style={{ color: '#fff', fontSize: 14, fontWeight: 500, ...BN }}>
           ঋণ অনুমোদিত হলে, আপনাকে প্রতি মাসের ১ থেকে ১০ তারিখের মধ্যে কিস্তি পরিশোধ করতে হবে।
-        </div>
-        <style>{`@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-200%) } }`}</style>
-      </div>
-
-      {/* Greeting */}
-      <div style={{ backgroundColor: '#1d3a8a', padding: '8px 20px 22px' }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-          {hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'}, {user?.name}!
-        </div>
-        <div style={{ color: '#93c5fd', fontSize: 12, marginTop: 2 }}>বিশ্ব ব্যাংক ঋণে আপনাকে স্বাগতম!</div>
+        </span>
       </div>
       <div style={{ padding: '28px 16px' }}>
 
