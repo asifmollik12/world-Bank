@@ -92,18 +92,29 @@ export default function Profile() {
           display: 'flex', alignItems: 'center', gap: 16,
           boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
         }}>
+          {/* Avatar with person icon */}
           <div style={{
             width: 64, height: 64, borderRadius: '50%',
             border: '2px dashed #9ca3af',
-            backgroundColor: '#d1d5db',
+            backgroundColor: '#4a7ab5',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
+            flexShrink: 0, overflow: 'hidden',
           }}>
-            <span style={{ fontSize: 10, color: '#6b7280', fontWeight: 700, letterSpacing: 0.5 }}>AVATAR</span>
+            <svg viewBox="0 0 64 64" width="64" height="64">
+              <circle cx="32" cy="32" r="32" fill="#4a7ab5"/>
+              {/* Head */}
+              <circle cx="32" cy="22" r="11" fill="#f5cba7"/>
+              {/* Body / suit */}
+              <ellipse cx="32" cy="52" rx="18" ry="14" fill="#2c3e6b"/>
+              {/* Shirt */}
+              <polygon points="28,40 32,36 36,40 34,52 30,52" fill="#fff"/>
+              {/* Tie */}
+              <polygon points="31,38 33,38 34,48 30,48" fill="#c0392b"/>
+            </svg>
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 17, color: '#111' }}>{name}</div>
-            <div style={{ color: '#6b7280', fontSize: 14, marginTop: 2 }}>{phone}</div>
+            <div style={{ fontWeight: 800, fontSize: 18, color: '#111' }}>{name}</div>
+            <div style={{ color: '#6b7280', fontSize: 15, marginTop: 2, fontFamily: 'monospace' }}>{phone}</div>
           </div>
         </div>
 
