@@ -1,83 +1,161 @@
-import { useEffect, useState } from 'react'
-import api from '../../api/axios'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import { FaBell, FaCheckDouble } from 'react-icons/fa'
+import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell } from 'react-icons/fa'
 
-const typeColor = {
-  info: 'border-blue-400 bg-blue-50',
-  success: 'border-green-400 bg-green-50',
-  warning: 'border-yellow-400 bg-yellow-50',
-  danger: 'border-red-400 bg-red-50',
+const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+
+function BottomNav({ active }) {
+  const items = [
+    { icon: <FaHome size={20} />,       label: 'হোম',      path: '/dashboard' },
+    { icon: <FaLayerGroup size={20} />, label: 'ঋণ',       path: '/dashboard/loans' },
+    { icon: <FaCreditCard size={20} />, label: 'কার্ড',    path: '/dashboard/repayments' },
+    { icon: <FaHeadset size={20} />,    label: 'সাহায়া',  path: '/dashboard/notifications' },
+    { icon: <FaUser size={20} />,       label: 'প্রোফাইল', path: '/dashboard/profile' },
+  ]
+  return (
+    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 14px', zIndex: 50, boxShadow: '0 -2px 10px rgba(0,0,0,0.06)' }}>
+      {items.map(item => {
+        const isActive = active === item.path
+        return (
+          <Link key={item.path} to={item.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, color: isActive ? '#1d3a8a' : '#9ca3af', textDecoration: 'none', fontSize: 10, fontWeight: isActive ? 700 : 400, ...BN }}>
+            {item.icon}<span>{item.label}</span>
+          </Link>
+        )
+      })}
+    </div>
+  )
 }
-const typeDot = {
-  info: 'bg-blue-500',
-  success: 'bg-green-500',
-  warning: 'bg-yellow-500',
-  danger: 'bg-red-500',
-}
 
-export default function Notifications() {
-  const [notifications, setNotifications] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function Support() {
+  const { user } = useAuth()
+  const [message, setMessage] = useState('')
+  const [phone, setPhone]     = useState('')
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    api.get('/notifications').then(r => setNotifications(r.data)).finally(() => setLoading(false))
-  }, [])
+  const name     = user?.name || 'User'
+  const initials = name.charAt(0).toUpperCase()
 
-  const markAllRead = async () => {
-    await api.post('/notifications/read-all')
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })))
-    toast.success('All marked as read')
+  const handleSend = e => {
+    e.preventDefault()
+    if (!message.trim()) { toast.error('বার্তা লিখুন'); return }
+    if (!phone.trim())   { toast.error('ফোন নম্বর লিখুন'); return }
+    setLoading(true)
+    setTimeout(() => {
+      toast.success('বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।')
+      setMessage(''); setPhone(''); setLoading(false)
+    }, 800)
   }
 
-  const markOne = async (id) => {
-    await api.patch(`/notifications/${id}/read`)
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n))
+  const inputStyle = {
+    width: '100%', border: '1px solid #d1d5db', borderRadius: 8,
+    padding: '14px 16px', fontSize: 14, outline: 'none',
+    color: '#374151', backgroundColor: '#fff', boxSizing: 'border-box', ...BN,
   }
-
-  const unread = notifications.filter(n => !n.is_read).length
-
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700" /></div>
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-blue-900">Notifications</h1>
-          <p className="text-slate-500 text-sm">{unread} unread notification{unread !== 1 ? 's' : ''}</p>
+    <div style={{ backgroundColor: '#fff', minHeight: '100vh', paddingBottom: 80, ...BN }}>
+
+      {/* Navbar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>World Bank</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <FaBell color="#fff" size={18} />
+          <div style={{ width: 38, height: 38, borderRadius: '50%', border: '2px dashed #93c5fd', backgroundColor: '#1e40af', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 15 }}>
+            {initials}
+          </div>
+          <span style={{ color: '#fff', fontSize: 13, fontWeight: 500 }}>{name}</span>
         </div>
-        {unread > 0 && (
-          <button onClick={markAllRead} className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium">
-            <FaCheckDouble /> Mark all read
-          </button>
-        )}
       </div>
 
-      {notifications.length === 0 ? (
-        <div className="bg-white rounded-xl p-12 text-center border border-slate-100">
-          <FaBell className="text-slate-300 text-5xl mx-auto mb-4" />
-          <p className="text-slate-400">No notifications yet</p>
+      {/* Marquee */}
+      <div style={{ backgroundColor: '#1d3a8a', borderTop: '1px solid #2d4eaa', padding: '8px 0', overflow: 'hidden' }}>
+        <div style={{ color: '#fff', fontSize: 13, whiteSpace: 'nowrap', animation: 'marquee 20s linear infinite', paddingLeft: '100%', ...BN }}>
+          সাহায্য পেতে আমাদের সাথে চ্যাট করুন অথবা নিচে দেওয়া ফর্মে আপনার সমস্যা লিখে পাঠান।
         </div>
-      ) : (
-        <div className="space-y-3">
-          {notifications.map(n => (
-            <div key={n.id}
-              onClick={() => !n.is_read && markOne(n.id)}
-              className={`border-l-4 rounded-xl p-4 cursor-pointer transition ${typeColor[n.type]} ${!n.is_read ? 'shadow-sm' : 'opacity-60'}`}>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${typeDot[n.type]}`} />
-                  <div>
-                    <div className={`font-semibold text-sm ${!n.is_read ? 'text-slate-800' : 'text-slate-500'}`}>{n.title}</div>
-                    <div className="text-sm text-slate-600 mt-0.5">{n.message}</div>
-                  </div>
-                </div>
-                <div className="text-xs text-slate-400 whitespace-nowrap">{new Date(n.created_at).toLocaleDateString()}</div>
+        <style>{`@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-200%) } }`}</style>
+      </div>
+
+      <div style={{ padding: '20px 16px', maxWidth: 560, margin: '0 auto' }}>
+
+        {/* Blue info card */}
+        <div style={{ backgroundColor: '#1d3a8a', borderRadius: 12, padding: '20px 22px', color: '#fff', marginBottom: 20 }}>
+
+          {/* Address */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
+              <span style={{ fontSize: 18 }}>📍</span> ঠিকানা:
+            </div>
+            <div style={{ color: '#bfdbfe', fontSize: 14, paddingLeft: 28 }}>
+              ই-৩২, আগারগাঁও, শেরে-বাংলা নগর, ঢাকা - ১২০৭।
+            </div>
+          </div>
+
+          {/* Office hours */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
+              <span style={{ fontSize: 18 }}>❓</span> কার্যক্রম:
+            </div>
+            <div style={{ color: '#bfdbfe', fontSize: 14, paddingLeft: 28 }}>
+              সকাল ৯টা থেকে রাত ৯টা, শনি থেকে বৃহস্পতিবার।
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 10 }}>
+              <span style={{ fontSize: 18 }}>📞</span> সরাসির যোগাযোগ করুনঃ
+            </div>
+            <div style={{ paddingLeft: 28, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {/* WhatsApp */}
+              <a href="https://wa.me/8801827672726" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#fff', textDecoration: 'none', fontSize: 14 }}>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" strokeWidth="1.5">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                Whatsapp: +8801827672726
+              </a>
+              {/* IMO */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14 }}>
+                <div style={{ width: 22, height: 22, borderRadius: '50%', border: '1.5px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>imo</div>
+                IMO: +8801827672726
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      )}
+
+        {/* Message form */}
+        <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <textarea
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            rows={5}
+            placeholder="যদি আপনার কোন প্রশ্ন বা উদ্বেগ থাকে, তাহলে অনুগ্রহ করে এখানে লিখুন!"
+            style={{ ...inputStyle, resize: 'none' }}
+          />
+          <input
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            placeholder="আপনার যোগাযোগের ফোন নম্বর লিখুন!"
+            style={inputStyle}
+          />
+          <button type="submit" disabled={loading} style={{
+            width: '100%', backgroundColor: '#1d3a8a', color: '#fff',
+            border: 'none', borderRadius: 8, padding: '15px',
+            fontSize: 16, fontWeight: 700,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            opacity: loading ? 0.8 : 1, ...BN,
+          }}>
+            {loading
+              ? <span style={{ width: 20, height: 20, border: '3px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block' }} />
+              : 'বার্তা পাঠান'
+            }
+          </button>
+        </form>
+      </div>
+
+      <BottomNav active="/dashboard/notifications" />
     </div>
   )
 }
