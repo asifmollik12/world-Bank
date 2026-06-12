@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -50,12 +51,13 @@ export default function Profile() {
   const name     = user?.name || 'User'
   const phone    = user?.phone || ''
   const initials = name.charAt(0).toUpperCase()
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'
 
   const handleLogout = async () => {
-    if (!confirm('আপনি কি লগ আউট করতে চান?')) return
+    setShowLogoutModal(false)
     await logout()
     toast.success('লগআউট হয়েছে')
     navigate('/')
@@ -130,9 +132,68 @@ export default function Profile() {
           icon={<FaSignOutAlt />}
           label="লগ আউট"
           red
-          onClick={handleLogout}
+          onClick={() => setShowLogoutModal(true)}
         />
       </div>
+
+      {/* ── Logout Confirmation Modal ── */}
+      {showLogoutModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 100,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 24,
+        }}>
+          <div style={{
+            backgroundColor: '#fff', borderRadius: 20,
+            padding: '32px 28px', width: '100%', maxWidth: 360,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+            textAlign: 'center', ...BN,
+          }}>
+            {/* Icon */}
+            <div style={{
+              width: 64, height: 64, borderRadius: '50%',
+              backgroundColor: '#fef2f2', border: '2px solid #fecaca',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 20px', fontSize: 28,
+            }}>
+              🚪
+            </div>
+
+            <h3 style={{ fontWeight: 800, fontSize: 20, color: '#111', marginBottom: 10, ...BN }}>
+              লগ আউট
+            </h3>
+            <p style={{ color: '#6b7280', fontSize: 15, marginBottom: 28, lineHeight: 1.6, ...BN }}>
+              আপনি কি নিশ্চিতভাবে লগ আউট করতে চান?
+            </p>
+
+            <div style={{ display: 'flex', gap: 12 }}>
+              {/* Cancel */}
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                style={{
+                  flex: 1, padding: '13px', borderRadius: 12,
+                  border: '1.5px solid #e5e7eb', backgroundColor: '#f9fafb',
+                  color: '#374151', fontSize: 15, fontWeight: 600, cursor: 'pointer', ...BN,
+                }}
+              >
+                বাতিল
+              </button>
+              {/* Confirm */}
+              <button
+                onClick={handleLogout}
+                style={{
+                  flex: 1, padding: '13px', borderRadius: 12,
+                  border: 'none', backgroundColor: '#dc2626',
+                  color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', ...BN,
+                }}
+              >
+                হ্যাঁ, লগ আউট
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomNav active="/dashboard/profile" />
     </div>
