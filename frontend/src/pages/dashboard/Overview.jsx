@@ -83,7 +83,7 @@ export default function Overview() {
       </div>
 
       {/* ── Greeting ── */}
-      <div style={{ backgroundColor: '#1d3a8a', padding: '8px 20px 20px' }}>
+      <div style={{ backgroundColor: '#1d3a8a', padding: '8px 20px 28px' }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>
           {greeting}, {user?.name}!
         </div>
@@ -93,14 +93,13 @@ export default function Overview() {
       </div>
 
       {/* ── Content ── */}
-      <div style={{ padding: '0 16px', marginTop: -10 }}>
+      <div style={{ padding: '24px 16px' }}>
 
         {/* Balance card */}
         <div style={{
           backgroundColor: '#1d3a8a', borderRadius: 12, padding: '22px 24px',
           marginBottom: 28, boxShadow: '0 4px 20px rgba(29,58,138,0.25)',
-          maxWidth: 560, margin: '0 auto 28px',
-        }}>
+          maxWidth: 560, margin: '0 auto 28px',        }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <span style={{ color: '#93c5fd', fontSize: 14 }}>আকাউন্ট ব্যালেন্স</span>
             {/* Globe icon bigger */}
