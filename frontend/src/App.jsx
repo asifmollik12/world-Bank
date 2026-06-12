@@ -24,6 +24,7 @@ import Repayments from './pages/dashboard/Repayments'
 import Notifications from './pages/dashboard/Notifications'
 import Profile from './pages/dashboard/Profile'
 import BankAccount from './pages/dashboard/BankAccount'
+import PersonalInfo from './pages/dashboard/PersonalInfo'
 
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -69,6 +70,7 @@ export default function App() {
             <Route index element={<Overview />} />
             <Route path="apply" element={<ApplyLoan />} />
             <Route path="bank-account" element={<BankAccount />} />
+            <Route path="personal-info" element={<PersonalInfo />} />
             <Route path="loans" element={<MyLoans />} />
             <Route path="repayments" element={<Repayments />} />
             <Route path="notifications" element={<Notifications />} />

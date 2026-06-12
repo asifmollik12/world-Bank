@@ -141,7 +141,7 @@ export default function Overview() {
             <div style={{ color: '#374151', fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>
               ঋণ আবেদনের জন্য প্রথমে আপনাকে ব্যক্তিগত তথ্য পূরণ করতে হবে!
             </div>
-            <Link to="/dashboard/profile" style={{
+            <Link to="/dashboard/personal-info" style={{
               display: 'inline-block', backgroundColor: '#1d3a8a',
               color: '#fff', fontWeight: 700, fontSize: 15,
               padding: '14px 40px', borderRadius: 8, textDecoration: 'none', ...BN,
