@@ -122,7 +122,7 @@ export default function Profile() {
         <MenuItem
           icon={<FaIdCard />}
           label="ব্যক্তিগত তথ্য"
-          to="/dashboard/personal-info"
+          to="/dashboard/personal-info-view"
         />
         <MenuItem
           icon={<FaCard />}

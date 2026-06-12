@@ -27,6 +27,7 @@ import BankAccount from './pages/dashboard/BankAccount'
 import PersonalInfo from './pages/dashboard/PersonalInfo'
 import ChangePassword from './pages/dashboard/ChangePassword'
 import LoanWithdraw from './pages/dashboard/LoanWithdraw'
+import PersonalInfoView from './pages/dashboard/PersonalInfoView'
 
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -73,8 +74,9 @@ export default function App() {
             <Route path="apply" element={<ApplyLoan />} />
             <Route path="bank-account"    element={<BankAccount />} />
             <Route path="personal-info"   element={<PersonalInfo />} />
-            <Route path="change-password" element={<ChangePassword />} />
-            <Route path="withdraw"        element={<LoanWithdraw />} />
+            <Route path="change-password"      element={<ChangePassword />} />
+            <Route path="withdraw"             element={<LoanWithdraw />} />
+            <Route path="personal-info-view"   element={<PersonalInfoView />} />
             <Route path="terms"           element={<div style={{padding:40,fontFamily:'sans-serif',textAlign:'center'}}><h2>নিয়মাবলী ও শর্তাবলী</h2><p>শীঘ্রই আসছে...</p></div>} />
             <Route path="loans" element={<MyLoans />} />
             <Route path="repayments" element={<Repayments />} />

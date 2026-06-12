@@ -82,6 +82,8 @@ export default function PersonalInfo() {
         nid:     form.nid     || undefined,
         address: form.current_address || undefined,
       })
+      // Save all form data to localStorage for preview
+      localStorage.setItem('wbg_personal_info', JSON.stringify(form))
       await refreshUser()
       toast.success('ব্যক্তিগত তথ্য সংরক্ষিত হয়েছে!')
       navigate('/dashboard/apply')
