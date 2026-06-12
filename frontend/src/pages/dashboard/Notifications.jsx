@@ -50,7 +50,7 @@ export default function Support() {
 
   const inputStyle = {
     width: '100%', border: '1px solid #d1d5db', borderRadius: 8,
-    padding: '14px 16px', fontSize: 14, outline: 'none',
+    padding: '16px 18px', fontSize: 16, outline: 'none',
     color: '#374151', backgroundColor: '#fff', boxSizing: 'border-box', ...BN,
   }
 
@@ -69,12 +69,11 @@ export default function Support() {
         </div>
       </div>
 
-      {/* Marquee */}
-      <div style={{ backgroundColor: '#1d3a8a', borderTop: '1px solid #2d4eaa', padding: '8px 0', overflow: 'hidden' }}>
-        <div style={{ color: '#fff', fontSize: 13, whiteSpace: 'nowrap', animation: 'marquee 20s linear infinite', paddingLeft: '100%', ...BN }}>
+      {/* Static notice bar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '14px 24px', textAlign: 'center' }}>
+        <span style={{ color: '#fff', fontSize: 15, fontWeight: 500, ...BN }}>
           সাহায্য পেতে আমাদের সাথে চ্যাট করুন অথবা নিচে দেওয়া ফর্মে আপনার সমস্যা লিখে পাঠান।
-        </div>
-        <style>{`@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-200%) } }`}</style>
+        </span>
       </div>
 
       <div style={{ padding: '20px 16px', maxWidth: 560, margin: '0 auto' }}>
@@ -84,39 +83,39 @@ export default function Support() {
 
           {/* Address */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
-              <span style={{ fontSize: 18 }}>📍</span> ঠিকানা:
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 18, marginBottom: 6 }}>
+              <span style={{ fontSize: 20 }}>📍</span> ঠিকানা:
             </div>
-            <div style={{ color: '#bfdbfe', fontSize: 14, paddingLeft: 28 }}>
+            <div style={{ color: '#bfdbfe', fontSize: 15, paddingLeft: 30 }}>
               ই-৩২, আগারগাঁও, শেরে-বাংলা নগর, ঢাকা - ১২০৭।
             </div>
           </div>
 
           {/* Office hours */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>
-              <span style={{ fontSize: 18 }}>❓</span> কার্যক্রম:
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 18, marginBottom: 6 }}>
+              <span style={{ fontSize: 20 }}>❓</span> কার্যক্রম:
             </div>
-            <div style={{ color: '#bfdbfe', fontSize: 14, paddingLeft: 28 }}>
+            <div style={{ color: '#bfdbfe', fontSize: 15, paddingLeft: 30 }}>
               সকাল ৯টা থেকে রাত ৯টা, শনি থেকে বৃহস্পতিবার।
             </div>
           </div>
 
           {/* Contact */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 16, marginBottom: 10 }}>
-              <span style={{ fontSize: 18 }}>📞</span> সরাসির যোগাযোগ করুনঃ
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 18, marginBottom: 10 }}>
+              <span style={{ fontSize: 20 }}>📞</span> সরাসির যোগাযোগ করুনঃ
             </div>
-            <div style={{ paddingLeft: 28, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ paddingLeft: 30, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {/* WhatsApp */}
-              <a href="https://wa.me/8801827672726" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#fff', textDecoration: 'none', fontSize: 14 }}>
+              <a href="https://wa.me/8801827672726" style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#fff', textDecoration: 'none', fontSize: 15 }}>
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" strokeWidth="1.5">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                 </svg>
                 Whatsapp: +8801827672726
               </a>
               {/* IMO */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15 }}>
                 <div style={{ width: 22, height: 22, borderRadius: '50%', border: '1.5px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>imo</div>
                 IMO: +8801827672726
               </div>
