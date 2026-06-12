@@ -4,7 +4,7 @@ import api from '../../api/axios'
 import toast from 'react-hot-toast'
 import { FaArrowLeft } from 'react-icons/fa'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 const durations = [
   { label: '১২ মাস', val: 12 }, { label: '১৮ মাস', val: 18 }, { label: '২৪ মাস', val: 24 },

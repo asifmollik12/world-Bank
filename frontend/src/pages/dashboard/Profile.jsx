@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaChevronRight, FaSignOutAlt, FaLock, FaShieldAlt, FaIdCard, FaCreditCard as FaCard } from 'react-icons/fa'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 function BottomNav({ active }) {
   const items = [

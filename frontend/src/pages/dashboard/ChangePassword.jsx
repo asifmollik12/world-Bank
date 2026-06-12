@@ -4,7 +4,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 import api from '../../api/axios'
 import toast from 'react-hot-toast'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 export default function ChangePassword() {
   const navigate = useNavigate()

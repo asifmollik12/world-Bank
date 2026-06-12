@@ -37,7 +37,7 @@ export default function StaffDashboard() {
   const regTabs = ['আজ','গতকাল','এই সপ্তাহ','এই মাস','গত মাস']
 
   return (
-    <div style={{ fontFamily: "'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
+    <div style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
 
       {/* Page header */}
       <div className="mb-5">

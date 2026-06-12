@@ -38,7 +38,7 @@ export default function StaffVerify() {
   }
 
   return (
-    <div style={{ fontFamily: "'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
+    <div style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
       {/* Search bar — matches original screenshot */}
       <form onSubmit={handleSearch} className="flex items-center gap-3 mb-8">
         <div

@@ -5,9 +5,10 @@
     box-sizing: border-box;
   }
   body {
-    font-family: 'Hind Siliguri', 'Inter', system-ui, sans-serif;
+    font-family: 'Noto Sans Bengali', 'Noto Sans Bengali', 'Hind Siliguri', 'Inter', system-ui, sans-serif;
     background-color: #f8fafc;
     color: #1e293b;
+    font-size: 16px;
   }
 }
 

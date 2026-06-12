@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import api from '../../api/axios'
 import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaGlobe } from 'react-icons/fa'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 function BottomNav({ active }) {
   const items = [

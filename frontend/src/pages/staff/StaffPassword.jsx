@@ -58,7 +58,7 @@ export default function StaffPassword() {
   return (
     <div
       className="flex items-center justify-center min-h-full"
-      style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+      style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}
     >
       <div
         className="w-full max-w-sm rounded-2xl p-7"

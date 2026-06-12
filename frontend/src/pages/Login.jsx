@@ -26,7 +26,7 @@ export default function Login() {
   }
 
   return (
-    <div className="flex w-screen h-screen overflow-hidden" style={{ fontFamily: "'Hind Siliguri', sans-serif" }}>
+    <div className="flex w-screen h-screen overflow-hidden" style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}>
 
       {/* ── LEFT PANEL: building photo + Bengali tagline ── */}
       <div className="hidden md:flex md:w-1/2 relative items-center justify-center">

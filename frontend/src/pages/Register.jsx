@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
 import { FaCamera, FaArrowLeft, FaCheck } from 'react-icons/fa'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 function PhotoUpload({ label, value, onChange }) {
   const ref = useRef()

@@ -37,7 +37,7 @@ export default function Home() {
           {/* Bengali headline */}
           <h1
             className="text-2xl md:text-3xl font-bold leading-snug mb-8"
-            style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+            style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}
           >
             সহজ, দ্রুত ও নিরাপদ লোন আপনার<br />দোরগোড়ায়।
           </h1>
@@ -47,14 +47,14 @@ export default function Home() {
             <Link
               to="/login"
               className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-full transition flex items-center gap-2 text-sm"
-              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+              style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}
             >
               ঋণের জন্য আবেদন করুন <FaArrowRight />
             </Link>
             <a
               href="#"
               className="bg-green-600 hover:bg-green-500 text-white font-semibold px-6 py-2.5 rounded-full transition flex items-center gap-2 text-sm"
-              style={{ fontFamily: "'Hind Siliguri', sans-serif" }}
+              style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}
             >
               অ্যাপ ডাউনলোড করুন <FaDownload />
             </a>

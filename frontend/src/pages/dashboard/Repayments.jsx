@@ -2,7 +2,7 @@ import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell } from 'react-icons/fa'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 function BottomNav({ active }) {
   const items = [

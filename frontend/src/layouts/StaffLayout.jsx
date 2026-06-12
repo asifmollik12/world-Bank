@@ -32,7 +32,7 @@ export default function StaffLayout() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ backgroundColor: '#0f172a', fontFamily: "'Hind Siliguri', sans-serif" }}
+      style={{ backgroundColor: '#0f172a', fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }}
     >
       {/* ── SIDEBAR ── */}
       <aside

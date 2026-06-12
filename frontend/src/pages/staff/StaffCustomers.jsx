@@ -41,7 +41,7 @@ export default function StaffCustomers() {
   }
 
   return (
-    <div style={{ fontFamily: "'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
+    <div style={{ fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif", color: '#e2e8f0' }}>
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>

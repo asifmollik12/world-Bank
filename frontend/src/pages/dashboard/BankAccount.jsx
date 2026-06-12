@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 
-const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+const BN = { fontFamily: "'Noto Sans Bengali', 'Hind Siliguri', sans-serif" }
 
 const inputStyle = {
   width: '100%', border: '1.5px solid #3b5fc0', borderRadius: 6,
