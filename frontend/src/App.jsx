@@ -25,6 +25,7 @@ import Notifications from './pages/dashboard/Notifications'
 import Profile from './pages/dashboard/Profile'
 import BankAccount from './pages/dashboard/BankAccount'
 import PersonalInfo from './pages/dashboard/PersonalInfo'
+import ChangePassword from './pages/dashboard/ChangePassword'
 
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -69,8 +70,10 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Overview />} />
             <Route path="apply" element={<ApplyLoan />} />
-            <Route path="bank-account" element={<BankAccount />} />
-            <Route path="personal-info" element={<PersonalInfo />} />
+            <Route path="bank-account"    element={<BankAccount />} />
+            <Route path="personal-info"   element={<PersonalInfo />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="terms"           element={<div style={{padding:40,fontFamily:'sans-serif',textAlign:'center'}}><h2>নিয়মাবলী ও শর্তাবলী</h2><p>শীঘ্রই আসছে...</p></div>} />
             <Route path="loans" element={<MyLoans />} />
             <Route path="repayments" element={<Repayments />} />
             <Route path="notifications" element={<Notifications />} />

@@ -1,123 +1,140 @@
-import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import api from '../../api/axios'
 import toast from 'react-hot-toast'
-import { FaUser, FaLock } from 'react-icons/fa'
+import { FaHome, FaLayerGroup, FaCreditCard, FaHeadset, FaUser, FaBell, FaChevronRight, FaSignOutAlt, FaLock, FaShieldAlt, FaIdCard, FaCreditCard as FaCard } from 'react-icons/fa'
+
+const BN = { fontFamily: "'Hind Siliguri', sans-serif" }
+
+function BottomNav({ active }) {
+  const items = [
+    { icon: <FaHome size={20} />,       label: 'হোম',      path: '/dashboard' },
+    { icon: <FaLayerGroup size={20} />, label: 'ঋণ',       path: '/dashboard/loans' },
+    { icon: <FaCreditCard size={20} />, label: 'কার্ড',    path: '/dashboard/repayments' },
+    { icon: <FaHeadset size={20} />,    label: 'সাহায়া',  path: '/dashboard/notifications' },
+    { icon: <FaUser size={20} />,       label: 'প্রোফাইল', path: '/dashboard/profile' },
+  ]
+  return (
+    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '10px 0 14px', zIndex: 50, boxShadow: '0 -2px 10px rgba(0,0,0,0.06)' }}>
+      {items.map(item => {
+        const isActive = active === item.path
+        return (
+          <Link key={item.path} to={item.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, color: isActive ? '#1d3a8a' : '#9ca3af', textDecoration: 'none', fontSize: 10, fontWeight: isActive ? 700 : 400, ...BN }}>
+            {item.icon}<span>{item.label}</span>
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+function MenuItem({ icon, label, to, red, onClick }) {
+  const content = (
+    <div style={{
+      backgroundColor: '#fff', borderRadius: 12, padding: '16px 18px',
+      display: 'flex', alignItems: 'center', gap: 14,
+      cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    }}>
+      <span style={{ color: red ? '#dc2626' : '#1a1a1a', fontSize: 20, width: 24, display: 'flex', justifyContent: 'center' }}>{icon}</span>
+      <span style={{ flex: 1, fontWeight: 600, fontSize: 16, color: red ? '#dc2626' : '#1a1a1a', ...BN }}>{label}</span>
+      <FaChevronRight size={14} color={red ? '#dc2626' : '#9ca3af'} />
+    </div>
+  )
+  if (onClick) return <div onClick={onClick}>{content}</div>
+  return <Link to={to} style={{ textDecoration: 'none' }}>{content}</Link>
+}
 
 export default function Profile() {
-  const { user, refreshUser } = useAuth()
-  const [form, setForm] = useState({ name: user?.name || '', address: user?.address || '', nid: user?.nid || '' })
-  const [passForm, setPassForm] = useState({ current_password: '', password: '', password_confirmation: '' })
-  const [loading, setLoading] = useState(false)
-  const [passLoading, setPassLoading] = useState(false)
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
-  const handleProfile = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    try {
-      await api.post('/profile/update', form)
-      await refreshUser()
-      toast.success('Profile updated!')
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Update failed')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const name     = user?.name || 'User'
+  const phone    = user?.phone || ''
+  const initials = name.charAt(0).toUpperCase()
 
-  const handlePassword = async (e) => {
-    e.preventDefault()
-    setPassLoading(true)
-    try {
-      await api.post('/profile/password', passForm)
-      toast.success('Password changed!')
-      setPassForm({ current_password: '', password: '', password_confirmation: '' })
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed')
-    } finally {
-      setPassLoading(false)
-    }
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'শুভ সকাল' : hour < 17 ? 'শুভ বিকেল' : 'শুভ সন্ধ্যা'
+
+  const handleLogout = async () => {
+    if (!confirm('আপনি কি লগ আউট করতে চান?')) return
+    await logout()
+    toast.success('লগআউট হয়েছে')
+    navigate('/')
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-blue-900">Profile Settings</h1>
-        <p className="text-slate-500 text-sm">Manage your account information</p>
-      </div>
+    <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', paddingBottom: 80, ...BN }}>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Profile Info */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-blue-100 rounded-full p-3"><FaUser className="text-blue-700 text-xl" /></div>
-            <h2 className="font-semibold text-blue-900">Personal Information</h2>
+      {/* Navbar */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>World Bank</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <FaBell color="#fff" size={18} />
+          <div style={{ width: 38, height: 38, borderRadius: '50%', border: '2px dashed #93c5fd', backgroundColor: '#1e40af', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 15 }}>
+            {initials}
           </div>
-
-          {/* Avatar */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="bg-blue-700 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <div className="font-semibold text-slate-800">{user?.name}</div>
-              <div className="text-sm text-slate-500">{user?.email}</div>
-              <div className="text-sm text-slate-500">{user?.phone}</div>
-            </div>
-          </div>
-
-          <form onSubmit={handleProfile} className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Full Name</label>
-              <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="input-field" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">NID Number</label>
-              <input type="text" value={form.nid} onChange={e => setForm({ ...form, nid: e.target.value })} className="input-field" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Address</label>
-              <input type="text" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} className="input-field" />
-            </div>
-            <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
-              {loading && <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />}
-              Save Changes
-            </button>
-          </form>
-        </div>
-
-        {/* Change Password */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-yellow-100 rounded-full p-3"><FaLock className="text-yellow-600 text-xl" /></div>
-            <h2 className="font-semibold text-blue-900">Change Password</h2>
-          </div>
-          <form onSubmit={handlePassword} className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Current Password</label>
-              <input type="password" value={passForm.current_password}
-                onChange={e => setPassForm({ ...passForm, current_password: e.target.value })}
-                className="input-field" required />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">New Password</label>
-              <input type="password" value={passForm.password}
-                onChange={e => setPassForm({ ...passForm, password: e.target.value })}
-                className="input-field" required />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Confirm New Password</label>
-              <input type="password" value={passForm.password_confirmation}
-                onChange={e => setPassForm({ ...passForm, password_confirmation: e.target.value })}
-                className="input-field" required />
-            </div>
-            <button type="submit" disabled={passLoading} className="btn-primary flex items-center gap-2">
-              {passLoading && <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />}
-              Update Password
-            </button>
-          </form>
+          <span style={{ color: '#fff', fontSize: 13, fontWeight: 500 }}>{name}</span>
         </div>
       </div>
+
+      {/* Greeting */}
+      <div style={{ backgroundColor: '#1d3a8a', padding: '8px 20px 22px' }}>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>{greeting}, {name}!</div>
+        <div style={{ color: '#93c5fd', fontSize: 12, marginTop: 2 }}>বিশ্ব ব্যাংক ঋণে আপনাকে স্বাগতম!</div>
+      </div>
+
+      <div style={{ padding: '20px 16px', maxWidth: 560, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+        {/* Avatar card */}
+        <div style={{
+          backgroundColor: '#e8eaf0', borderRadius: 14, padding: '16px 20px',
+          display: 'flex', alignItems: 'center', gap: 16,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+        }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: '50%',
+            border: '2px dashed #9ca3af',
+            backgroundColor: '#d1d5db',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <span style={{ fontSize: 10, color: '#6b7280', fontWeight: 700, letterSpacing: 0.5 }}>AVATAR</span>
+          </div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 17, color: '#111' }}>{name}</div>
+            <div style={{ color: '#6b7280', fontSize: 14, marginTop: 2 }}>{phone}</div>
+          </div>
+        </div>
+
+        {/* Menu items */}
+        <MenuItem
+          icon={<FaIdCard />}
+          label="ব্যক্তিগত তথ্য"
+          to="/dashboard/personal-info"
+        />
+        <MenuItem
+          icon={<FaCard />}
+          label="ব্যাংক আকাউন্ট"
+          to="/dashboard/bank-account"
+        />
+        <MenuItem
+          icon={<FaShieldAlt />}
+          label="নিয়মাবলী ও শর্তাবলী"
+          to="/dashboard/terms"
+        />
+        <MenuItem
+          icon={<FaLock />}
+          label="পাসওয়ার্ড পরিবর্তন"
+          to="/dashboard/change-password"
+        />
+        <MenuItem
+          icon={<FaSignOutAlt />}
+          label="লগ আউট"
+          red
+          onClick={handleLogout}
+        />
+      </div>
+
+      <BottomNav active="/dashboard/profile" />
     </div>
   )
 }
