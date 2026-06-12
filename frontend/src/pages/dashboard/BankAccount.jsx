@@ -27,6 +27,8 @@ export default function BankAccount() {
     e.preventDefault()
     if (!method) { toast.error('পেমেন্ট পদ্ধতি নির্বাচন করুন'); return }
     setLoading(true)
+    // Save bank info to localStorage for withdraw page
+    localStorage.setItem('wbg_bank_info', JSON.stringify({ method: method === 'bank' ? 'ব্যাংক আকাউন্ট' : method === 'bkash' ? 'বিকাশ' : 'নগদ', ...form }))
     setTimeout(() => {
       toast.success('ব্যাংক তথ্য সংরক্ষিত হয়েছে!')
       setLoading(false)

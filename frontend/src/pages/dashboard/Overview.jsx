@@ -113,7 +113,7 @@ export default function Overview() {
           <div style={{ color: '#fff', fontWeight: 900, fontSize: 32, marginBottom: 20 }}>
             ৳{totalBalance > 0 ? totalBalance.toLocaleString() + '.00' : '৳০.০০'}
           </div>
-          <Link to="/dashboard/apply" style={{
+          <Link to="/dashboard/withdraw" style={{
             display: 'block', textAlign: 'center',
             border: '1.5px solid #fff', borderRadius: 8, padding: '12px',
             color: '#fff', fontWeight: 700, fontSize: 15, textDecoration: 'none', ...BN,
