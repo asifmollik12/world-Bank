@@ -57,8 +57,8 @@ export default function StaffDashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             {/* bKash */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#E2136E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 900, fontSize: 18 }}>b</span>
+              <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, backgroundColor: '#E2136E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/bkash.png" alt="bKash" style={{ width: 44, height: 44, objectFit: 'cover' }} />
               </div>
               <div>
                 <div style={{ fontSize: 13, color: '#64748b' }}>বিকাশ</div>
@@ -67,8 +67,8 @@ export default function StaffDashboard() {
             </div>
             {/* Nagad */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#F7941D', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 700, fontSize: 10 }}>নগদ</span>
+              <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, backgroundColor: '#F7941D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/nagad.png" alt="Nagad" style={{ width: 44, height: 44, objectFit: 'cover' }} />
               </div>
               <div>
                 <div style={{ fontSize: 13, color: '#64748b' }}>নগদ</div>
