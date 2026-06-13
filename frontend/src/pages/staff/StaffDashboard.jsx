@@ -57,9 +57,7 @@ export default function StaffDashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             {/* bKash */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, backgroundColor: '#E2136E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/bkash.png" alt="bKash" style={{ width: 44, height: 44, objectFit: 'cover' }} />
-              </div>
+              <img src="/bkash.png" alt="bKash" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 13, color: '#64748b' }}>বিকাশ</div>
                 <div style={{ fontWeight: 700, color: '#fff', fontSize: 16 }}>01706329691</div>
@@ -67,9 +65,7 @@ export default function StaffDashboard() {
             </div>
             {/* Nagad */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, backgroundColor: '#F7941D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/nagad.png" alt="Nagad" style={{ width: 44, height: 44, objectFit: 'cover' }} />
-              </div>
+              <img src="/nagad.png" alt="Nagad" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 13, color: '#64748b' }}>নগদ</div>
                 <div style={{ fontWeight: 700, color: '#fff', fontSize: 16 }}>01706329691</div>
