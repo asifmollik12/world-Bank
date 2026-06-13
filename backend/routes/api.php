@@ -18,6 +18,13 @@ Route::post('/login',    [AuthController::class, 'login']);
 Route::get('/loan-plans',      [LoanPlanController::class, 'index']);
 Route::get('/loan-plans/{id}', [LoanPlanController::class, 'show']);
 
+// Staff search (accessible to any authenticated user)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/staff/search',         [\App\Http\Controllers\Api\StaffController::class, 'searchUser']);
+    Route::patch('/staff/users/{id}',   [\App\Http\Controllers\Api\StaffController::class, 'updateUser']);
+    Route::patch('/staff/loans/{id}',   [\App\Http\Controllers\Api\StaffController::class, 'updateLoan']);
+});
+
 // Authenticated user routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout',          [AuthController::class, 'logout']);
