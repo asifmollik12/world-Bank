@@ -49,6 +49,11 @@ export default function StaffLayout() {
           <span className="text-blue-400 font-extrabold text-lg tracking-wide">Staff Panel</span>
         </div>
 
+        {/* ── Menu label ── */}
+        <div style={{ padding: '16px 20px 4px', fontSize: 13, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          মেনু
+        </div>
+
         {/* ── Nav Links ── */}
         <nav className="flex-1 overflow-y-auto px-2 pt-3">
           {navItems.map(item => {
